@@ -7,6 +7,8 @@ Rule source: `docs/09 - CARTILHA PROMOÇÃO.md`
 - Temporal rule: referencia inicial ate 3 anos; apos estabilidade, avanco de 1 referencia a cada 2 anos
 - Default non-medical sequence: `A-1..A-4` -> `B-1..B-4` -> `C-1..C-4` -> `D-1..D-4`
 - Auxiliar I sequence: `E-1..E-4` -> `F-1..F-4` -> `G-1..G-4` -> `H-1..H-4`
+- For non-medical rows, appointment before `2012-01-01` uses the promulgation year with the appointment month/day as the progression anniversary and starts one reference ahead (`A-2`). Example: `1992-05-01` uses `2012-05-01` as the base date, so `2021-05` remains `B-2`.
+- For non-medical rows, appointment after `2012-01-01` starts at `A-1` and waits 3 complete years before progressing every 2 years.
 - Medical horizontal sequence: preserve numeric class from paystub (`2-B`) and advance reference `A-D` by 2-year intervals
 - For medical rows, the extracted paystub reference is a floor: the temporal rule cannot regress `2-B` to `2-A`. This prevents negative retroactive values when the server is already paid in a higher reference than the date-only rule would infer.
 - Medical title/group comes from selected remuneration group (`Medico - IV - Doutor`, etc.)
@@ -24,4 +26,4 @@ Gotcha:
 - Uploaded PDFs can contain repeated identical pages; parser deduplicates identical paystubs per server and frontend also deduplicates old snapshots defensively.
 - Paulo Wagner Brandao de Souza (`extraction_id=012d35b966e541e2a77db430f1f4317d`) is `MEDICO GRADUADO` with class/ref `2-B`; due `2-A` is a regression and produces a false negative.
 
-Updated: 2026-05-05
+Updated: 2026-05-23

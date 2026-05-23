@@ -30,6 +30,7 @@ import type {
   StoredServerRecord,
   StoredServerSummary,
 } from "./types";
+import { downloadCalculationExcel } from "./utils/excelExport";
 import { formatCurrency, formatDateTime } from "./utils/formatters";
 import {
   buildPaystubCalculationRows,
@@ -39,6 +40,8 @@ import {
   sortPaystubsByPeriod,
 } from "./utils/paystubCalculations";
 import { navigateToHome, navigateToServerDetail, parseRoute } from "./utils/routing";
+
+type DetailPrintMode = "calculation" | "spreadsheet";
 
 function AppShell({
   children,
@@ -402,6 +405,7 @@ function ServerDetailPage({ serverId }: { serverId: string }) {
   const [appointmentDateStatus, setAppointmentDateStatus] = useState("");
   const [isSavingAppointmentDate, setIsSavingAppointmentDate] = useState(false);
   const [isInfoPanelCollapsed, setIsInfoPanelCollapsed] = useState(false);
+  const [printMode, setPrintMode] = useState<DetailPrintMode>("calculation");
 
   const isCompleteIsoDate = (value: string) => /^\d{4}-\d{2}-\d{2}$/.test(value);
 
@@ -478,8 +482,23 @@ function ServerDetailPage({ serverId }: { serverId: string }) {
   const lastPeriod = visiblePaystubs[visiblePaystubs.length - 1]?.period ?? "-";
   const lowConfidenceRows = visiblePaystubs.filter((paystub) => paystub.audit.low_confidence).length;
 
-  const handlePrintPdf = () => {
-    window.print();
+  const handlePrintPdf = (mode: DetailPrintMode) => {
+    setPrintMode(mode);
+    window.setTimeout(() => {
+      window.print();
+    }, 0);
+  };
+
+  const handleExcelExport = () => {
+    if (!record) {
+      return;
+    }
+
+    downloadCalculationExcel({
+      calculationRows,
+      issuedAt: currentIssueDate,
+      server: record.server,
+    });
   };
 
   const saveAppointmentDate = async (nextAppointmentDate: string) => {
@@ -556,15 +575,35 @@ function ServerDetailPage({ serverId }: { serverId: string }) {
             Detalhamento do servidor judiciario
           </p>
         </div>
-        <button
-          className="print-button no-print"
-          disabled={!record}
-          onClick={handlePrintPdf}
-          type="button"
-        >
-          <Printer size={18} />
-          Imprimir PDF
-        </button>
+        <div className="print-actions no-print">
+          <button
+            className="print-button excel-button"
+            disabled={!record}
+            onClick={handleExcelExport}
+            type="button"
+          >
+            <FileSpreadsheet size={18} />
+            Gerar Excel
+          </button>
+          <button
+            className="print-button"
+            disabled={!record}
+            onClick={() => handlePrintPdf("calculation")}
+            type="button"
+          >
+            <Printer size={18} />
+            Imprimir calculo
+          </button>
+          <button
+            className="print-button print-button--spreadsheet"
+            disabled={!record}
+            onClick={() => handlePrintPdf("spreadsheet")}
+            type="button"
+          >
+            <FileSpreadsheet size={18} />
+            Imprimir planilha
+          </button>
+        </div>
       </section>
 
       {isLoading ? (
@@ -702,7 +741,7 @@ function ServerDetailPage({ serverId }: { serverId: string }) {
             {isInfoPanelCollapsed ? <PanelLeftOpen size={19} /> : <PanelLeftClose size={19} />}
           </button>
 
-          <section className="report-panel">
+          <section className={`report-panel print-mode--${printMode}`}>
             <div className="report-panel__header">
               <div>
                 <h2>Relatorio de Calculos</h2>
@@ -763,12 +802,21 @@ function ServerDetailPage({ serverId }: { serverId: string }) {
                   <dt>Data de emissao</dt>
                   <dd>{currentIssueDate}</dd>
                 </div>
+                <div>
+                  <dt>Modo de impressao</dt>
+                  <dd>
+                    {printMode === "calculation"
+                      ? "Calculo por competencia"
+                      : "Planilha completa"}
+                  </dd>
+                </div>
               </dl>
             </div>
 
             <ServerCard
               calculationRows={calculationRows}
               defaultView="calculation"
+              printMode={printMode}
               server={record.server}
             />
           </section>

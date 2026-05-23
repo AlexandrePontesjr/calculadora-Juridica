@@ -377,6 +377,24 @@ button:disabled {
   padding: 0 16px;
 }
 
+.print-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.print-button--spreadsheet {
+  border-color: #3f6f64;
+  color: #24574d;
+}
+
+.excel-button {
+  border-color: #0f766e;
+  background: #e6f4f1;
+  color: #0f5f59;
+}
+
 .secondary-action {
   width: 100%;
   background: #e3e6ef;
@@ -812,6 +830,11 @@ button:disabled {
   font-style: italic;
 }
 
+.server-card__print-view,
+.server-card__print-note {
+  display: none;
+}
+
 .calculation-group-toolbar {
   margin: 18px 0 14px;
 }
@@ -1240,6 +1263,7 @@ button:disabled {
   .detail-heading,
   .data-panel__header,
   .report-panel__header,
+  .print-actions,
   .calculation-group-toolbar,
   .paystub-detail__summary {
     align-items: stretch;
@@ -1312,7 +1336,8 @@ button:disabled {
   .detail-layout,
   .report-panel,
   .server-card__content,
-  .payment-competence-table__wrap {
+  .payment-competence-table__wrap,
+  .paystub-gains-table__wrap {
     display: block;
     width: 100%;
     max-width: none;
@@ -1407,15 +1432,32 @@ button:disabled {
     font-size: 8pt;
   }
 
-  .print-calculation-view {
-    display: block;
-  }
-
+  .server-card__print-view,
+  .print-calculation-view,
   .payment-competence-list {
     display: none;
   }
 
-  .payment-competence-table__wrap {
+  .print-mode--calculation .server-card__print-view--calculation,
+  .print-mode--calculation .server-card__print-view--calculation .print-calculation-view,
+  .print-mode--spreadsheet .server-card__print-view--spreadsheet {
+    display: block;
+  }
+
+  .print-mode--spreadsheet .server-card__print-view--spreadsheet .payment-competence-list {
+    display: grid;
+  }
+
+  .server-card__print-note {
+    display: block;
+    margin: 0 0 3mm;
+    color: #475569;
+    font-size: 8pt;
+    font-style: italic;
+  }
+
+  .payment-competence-table__wrap,
+  .paystub-gains-table__wrap {
     overflow: visible;
   }
 
@@ -1452,5 +1494,53 @@ button:disabled {
   .payment-competence-table tbody td,
   .payment-competence-table tbody th {
     font-size: 6.1pt;
+  }
+
+  .paystub-gains-table {
+    min-width: 0;
+    width: 100%;
+    table-layout: fixed;
+    color: #111827;
+    font-size: 5.8pt;
+  }
+
+  .paystub-gains-table th,
+  .paystub-gains-table td {
+    padding: 1mm 0.7mm;
+    border: 1px solid #cbd5e1;
+    white-space: normal;
+    vertical-align: top;
+  }
+
+  .paystub-gains-table th,
+  .paystub-gains-table thead tr:first-child th {
+    background: #e2e8f0;
+    color: #111827;
+    font-size: 5.4pt;
+    line-height: 1.15;
+    text-align: center;
+  }
+
+  .paystub-gains-table td {
+    line-height: 1.2;
+  }
+
+  .paystub-gains-table tbody tr {
+    break-inside: avoid;
+  }
+
+  .paystub-gains-table tbody tr:nth-child(even) td {
+    background: #f8fafc;
+  }
+
+  .paystub-gains-table td:nth-last-child(3),
+  .paystub-gains-table td:last-child {
+    color: #0f3b7a;
+    font-weight: 800;
+  }
+
+  .paystub-gains-table__source,
+  .paystub-gains-table__source-heading {
+    display: none;
   }
 }

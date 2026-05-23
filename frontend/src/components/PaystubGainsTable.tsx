@@ -194,7 +194,9 @@ export function PaystubGainsTable({
               <th rowSpan={2}>DIFERENCA</th>
               <th rowSpan={2}>GRAT. DE CURSO</th>
               <th rowSpan={2}>RETROATIVO</th>
-              <th rowSpan={2}>REFERENCIA DO CALCULO</th>
+              <th className="paystub-gains-table__source-heading" rowSpan={2}>
+                REFERENCIA DO CALCULO
+              </th>
             </tr>
             <tr>
               <th>CLASS/RF.</th>

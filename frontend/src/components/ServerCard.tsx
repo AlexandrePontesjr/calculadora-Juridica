@@ -14,10 +14,12 @@ export function ServerCard({
   calculationRows,
   server,
   defaultView = "spreadsheet",
+  printMode = "calculation",
 }: {
   calculationRows?: PaystubCalculationRow[];
   server: PublicServer;
   defaultView?: ServerCardView;
+  printMode?: ServerCardView;
 }) {
   const [activeView, setActiveView] = useState<ServerCardView>(defaultView);
   const sortedPaystubs = sortPaystubsByPeriod(server.paystubs);
@@ -94,7 +96,21 @@ export function ServerCard({
         )}
       </div>
 
-      <div className="print-calculation-view">
+      <div
+        aria-hidden={printMode !== "calculation"}
+        className="server-card__print-view server-card__print-view--calculation"
+      >
+        <p className="server-card__print-note">
+          Modo calculo: competencias calculadas nos ultimos{" "}
+          {PROMOTION_RETROACTIVE_WINDOW_MONTHS} meses.
+        </p>
+        <PaystubGainsTable calculationRows={visibleCalculationRows} server={server} />
+      </div>
+
+      <div
+        aria-hidden={printMode !== "spreadsheet"}
+        className="server-card__print-view server-card__print-view--spreadsheet"
+      >
         <PaystubDetailsList calculationRows={visibleCalculationRows} server={server} />
       </div>
     </div>

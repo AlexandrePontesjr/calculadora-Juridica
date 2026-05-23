@@ -108,7 +108,11 @@ const nonMedicalCareerClassSequences = {
   auxiliaryLevelOne: ["E", "F", "G", "H"],
 } as const;
 
+const medicalPre2012ClassSequence = ["2", "3", "4", "1"] as const;
+const medicalPost2012ClassSequence = ["1", "2", "3", "4"] as const;
 const medicalReferences = ["A", "B", "C", "D"] as const;
+const careerPromulgationDate = "2012-01-01";
+const careerPromulgationYear = 2012;
 
 function parseAmount(value: string | number | null | undefined): number | null {
   if (value === null || value === undefined || value === "") {
@@ -175,40 +179,6 @@ export function isWithinRetroactiveWindow(
   return monthDelta >= 0 && monthDelta < PROMOTION_RETROACTIVE_WINDOW_MONTHS;
 }
 
-function addYears(date: Date, years: number): Date {
-  const nextDate = new Date(date);
-  nextDate.setFullYear(nextDate.getFullYear() + years);
-  return nextDate;
-}
-
-function isAfterServiceThreshold(
-  appointmentDate: Date,
-  referenceDate: Date,
-  thresholdYears: number,
-): boolean {
-  return referenceDate.getTime() > addYears(appointmentDate, thresholdYears).getTime();
-}
-
-function getProgressionStepFromServiceTime(
-  appointmentDate: Date,
-  referenceDate: Date,
-): number | null {
-  if (referenceDate.getTime() < appointmentDate.getTime()) {
-    return null;
-  }
-
-  if (!isAfterServiceThreshold(appointmentDate, referenceDate, 3)) {
-    return 0;
-  }
-
-  let step = 1;
-  while (step < 16 && isAfterServiceThreshold(appointmentDate, referenceDate, 3 + step * 2)) {
-    step += 1;
-  }
-
-  return Math.min(step, 15);
-}
-
 function normalizeText(value: string | null | undefined): string {
   return (value ?? "")
     .normalize("NFD")
@@ -244,6 +214,88 @@ function getMedicalReferenceIndexFromPaystubClassRef(
   return index === -1 ? null : index;
 }
 
+function getMedicalClassRefFromStep(
+  step: number,
+  classSequence: readonly string[],
+): string {
+  const classIndex = step % classSequence.length;
+  const referenceIndex = Math.min(
+    Math.floor((step + 1) / classSequence.length),
+    medicalReferences.length - 1,
+  );
+  return `${classSequence[classIndex]}-${medicalReferences[referenceIndex]}`;
+}
+
+function getProgressionStepFromBaseDate(
+  baseDate: Date,
+  referenceDate: Date,
+  initialWaitingYears: number,
+): number | null {
+  if (referenceDate.getTime() < baseDate.getTime()) {
+    return 0;
+  }
+
+  const elapsedYears = referenceDate.getFullYear() - baseDate.getFullYear();
+  const anniversaryReached =
+    referenceDate.getMonth() > baseDate.getMonth() ||
+    (referenceDate.getMonth() === baseDate.getMonth() &&
+      referenceDate.getDate() >= baseDate.getDate());
+  const wholeYears = anniversaryReached ? elapsedYears : elapsedYears - 1;
+
+  if (wholeYears < 0) {
+    return 0;
+  }
+
+  if (initialWaitingYears <= 0) {
+    return Math.floor(wholeYears / 2);
+  }
+
+  return wholeYears < initialWaitingYears
+    ? 0
+    : 1 + Math.floor((wholeYears - initialWaitingYears) / 2);
+}
+
+function getPromulgationBaseDateFromAppointment(appointment: Date): Date {
+  return new Date(
+    careerPromulgationYear,
+    appointment.getMonth(),
+    appointment.getDate(),
+  );
+}
+
+function getProgressionBaseDate({
+  appointment,
+  promulgation,
+}: {
+  appointment: Date;
+  promulgation: Date;
+}): {
+  baseDate: Date;
+  initialWaitingYears: number;
+  isPrePromulgationAppointment: boolean;
+} {
+  const isPrePromulgationAppointment = appointment.getTime() < promulgation.getTime();
+
+  return {
+    baseDate: isPrePromulgationAppointment
+      ? getPromulgationBaseDateFromAppointment(appointment)
+      : appointment,
+    initialWaitingYears: isPrePromulgationAppointment ? 0 : 3,
+    isPrePromulgationAppointment,
+  };
+}
+
+function getNonMedicalClassRefFromStep(
+  step: number,
+  classSequence: readonly string[],
+): string {
+  const boundedStep = Math.min(step, classSequence.length * 4 - 1);
+  const classIndex = Math.floor(boundedStep / 4);
+  const referenceNumber = (boundedStep % 4) + 1;
+
+  return `${classSequence[classIndex]}-${referenceNumber}`;
+}
+
 function isMedicalGroup(groupLabel: string | null | undefined): boolean {
   return normalizeText(groupLabel).includes("MEDICO");
 }
@@ -264,27 +316,26 @@ function getMedicalRuleFromAppointmentDate({
     return undefined;
   }
 
-  const careerClass = getMedicalClassFromPaystubClassRef(currentClassRef);
-  if (!careerClass) {
+  const promulgation = new Date(`${careerPromulgationDate}T00:00:00`);
+  const { baseDate, initialWaitingYears, isPrePromulgationAppointment } =
+    getProgressionBaseDate({ appointment, promulgation });
+  const classSequence = isPrePromulgationAppointment
+    ? medicalPre2012ClassSequence
+    : medicalPost2012ClassSequence;
+  const step = getProgressionStepFromBaseDate(
+    baseDate,
+    reference,
+    initialWaitingYears,
+  );
+  if (step === null) {
     return undefined;
   }
 
-  let referenceIndex = 0;
-  while (
-    referenceIndex < medicalReferences.length - 1 &&
-    isAfterServiceThreshold(appointment, reference, (referenceIndex + 1) * 2)
-  ) {
-    referenceIndex += 1;
-  }
-
-  const currentReferenceIndex = getMedicalReferenceIndexFromPaystubClassRef(currentClassRef);
-  if (currentReferenceIndex !== null) {
-    referenceIndex = Math.max(referenceIndex, currentReferenceIndex);
-  }
+  const classRef = getMedicalClassRefFromStep(step, classSequence);
 
   return {
     startsAt: referenceDate,
-    classRef: `${careerClass}-${medicalReferences[referenceIndex]}`,
+    classRef,
     source: "09 - CARTILHA PROMOCAO.md: Progressao horizontal dos medicos",
   };
 }
@@ -314,20 +365,30 @@ export function getPromotionRuleFromAppointmentDate({
 
   const appointment = new Date(`${appointmentDate}T00:00:00`);
   const reference = new Date(`${referenceDate}T00:00:00`);
-  const step = getProgressionStepFromServiceTime(appointment, reference);
+  const promulgation = new Date(`${careerPromulgationDate}T00:00:00`);
+  const {
+    baseDate,
+    initialWaitingYears,
+    isPrePromulgationAppointment,
+  } = getProgressionBaseDate({ appointment, promulgation });
+  const step = getProgressionStepFromBaseDate(
+    baseDate,
+    reference,
+    initialWaitingYears,
+  );
   if (step === null) {
     return undefined;
   }
 
   const classSequence = getCareerClassSequence(groupLabel);
-  const classIndex = Math.floor(step / 4);
-  const referenceIndex = step % 4;
-  const careerClass = classSequence[classIndex] ?? classSequence[classSequence.length - 1];
-  const referenceNumber = Math.min(referenceIndex + 1, 4);
+  const classRef = getNonMedicalClassRefFromStep(
+    isPrePromulgationAppointment ? step + 1 : step,
+    classSequence,
+  );
 
   return {
     startsAt: referenceDate,
-    classRef: `${careerClass}-${referenceNumber}`,
+    classRef,
     source: cartilhaPromotionSource,
   };
 }
