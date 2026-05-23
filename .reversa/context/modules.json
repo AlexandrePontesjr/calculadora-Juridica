@@ -1,0 +1,193 @@
+{
+  "generated_at": "2026-05-14T22:12:00Z",
+  "modules": [
+    {
+      "name": "backend-api",
+      "path": "src/contracheque_extractor/api.py",
+      "purpose": "Expor a API HTTP FastAPI para extrair PDFs, listar snapshots, consultar detalhes e excluir servidores.",
+      "primary_files": ["src/contracheque_extractor/api.py"],
+      "functions": [
+        {"name": "create_app", "file": "src/contracheque_extractor/api.py", "params": ["service: ExtractionService | None = None"], "returns": "FastAPI", "confidence": "confirmed"},
+        {"name": "extract", "file": "src/contracheque_extractor/api.py", "params": ["file: UploadFile"], "returns": "ExtractionResponse", "confidence": "confirmed"},
+        {"name": "list_servers", "file": "src/contracheque_extractor/api.py", "params": ["limit: int = 50"], "returns": "list[StoredServerSummary]", "confidence": "confirmed"},
+        {"name": "get_server", "file": "src/contracheque_extractor/api.py", "params": ["server_id: str"], "returns": "StoredServerRecord", "confidence": "confirmed"},
+        {"name": "delete_server", "file": "src/contracheque_extractor/api.py", "params": ["server_id: str"], "returns": "Response", "confidence": "confirmed"}
+      ],
+      "entities": [],
+      "business_rules": [
+        {"description": "Uploads devem ter nome terminado em .pdf.", "location": "src/contracheque_extractor/api.py:33", "confidence": "confirmed"},
+        {"description": "Uploads vazios retornam HTTP 400.", "location": "src/contracheque_extractor/api.py:37", "confidence": "confirmed"}
+      ],
+      "dependencies": ["extraction-service", "models"],
+      "algorithms": [],
+      "complexity": "low"
+    },
+    {
+      "name": "cli",
+      "path": "src/contracheque_extractor/cli.py",
+      "purpose": "Executar extracao local de um PDF e imprimir o resultado JSON.",
+      "primary_files": ["src/contracheque_extractor/cli.py"],
+      "functions": [
+        {"name": "main", "file": "src/contracheque_extractor/cli.py", "params": [], "returns": "int", "confidence": "confirmed"}
+      ],
+      "entities": [],
+      "business_rules": [
+        {"description": "CLI exige exatamente um caminho de PDF como argumento.", "location": "src/contracheque_extractor/cli.py:11", "confidence": "confirmed"}
+      ],
+      "dependencies": ["extraction-service"],
+      "algorithms": [],
+      "complexity": "low"
+    },
+    {
+      "name": "models",
+      "path": "src/contracheque_extractor/models.py",
+      "purpose": "Definir modelos Pydantic usados pelos contratos da API, parser, persistencia e frontend.",
+      "primary_files": ["src/contracheque_extractor/models.py"],
+      "functions": [],
+      "entities": [
+        {"name": "ExtractionAlert", "fields": [{"name": "code", "type": "str", "required": true}, {"name": "severity", "type": "str", "required": true}, {"name": "message", "type": "str", "required": true}, {"name": "confidence", "type": "float", "required": true}], "confidence": "confirmed"},
+        {"name": "Paystub", "fields": [{"name": "page_number", "type": "int", "required": true}, {"name": "period", "type": "str", "required": true}, {"name": "class_ref", "type": "str | None", "required": false}, {"name": "entries", "type": "list[PayrollEntry]", "required": false}], "confidence": "confirmed"},
+        {"name": "PublicServer", "fields": [{"name": "server_id", "type": "str", "required": true}, {"name": "personal_info", "type": "PersonalInfo", "required": true}, {"name": "paystubs", "type": "list[Paystub]", "required": false}], "confidence": "confirmed"}
+      ],
+      "business_rules": [],
+      "dependencies": ["pydantic"],
+      "algorithms": [],
+      "complexity": "low"
+    },
+    {
+      "name": "pdf-parser",
+      "path": "src/contracheque_extractor/parser.py",
+      "purpose": "Extrair dados estruturados de PDFs de contracheques a partir de posicoes, textos, rubricas e totais.",
+      "primary_files": ["src/contracheque_extractor/parser.py"],
+      "functions": [
+        {"name": "parse_bytes", "file": "src/contracheque_extractor/parser.py", "params": ["pdf_bytes: bytes"], "returns": "ExtractionResponse", "confidence": "confirmed"},
+        {"name": "_parse_page", "file": "src/contracheque_extractor/parser.py", "params": ["page", "page_number: int"], "returns": "dict[str, Any]", "confidence": "confirmed"},
+        {"name": "_extract_entries", "file": "src/contracheque_extractor/parser.py", "params": ["lines: list[Line]"], "returns": "tuple[list[PayrollEntry], list[str]]", "confidence": "confirmed"},
+        {"name": "_calculate_confidence_score", "file": "src/contracheque_extractor/parser.py", "params": ["entries", "ignored_lines", "inferred_totals"], "returns": "float", "confidence": "confirmed"}
+      ],
+      "entities": [{"name": "Line", "fields": [{"name": "top", "type": "float", "required": true}, {"name": "words", "type": "list[dict[str, Any]]", "required": true}, {"name": "text", "type": "str", "required": true}], "confidence": "confirmed"}],
+      "business_rules": [
+        {"description": "server_id e SHA-256 truncado para 24 caracteres sobre dados normalizados do servidor.", "location": "src/contracheque_extractor/parser.py", "confidence": "confirmed"},
+        {"description": "Score de confianca penaliza linhas ignoradas, totais inferidos e ausencia de rubricas.", "location": "src/contracheque_extractor/parser.py", "confidence": "confirmed"}
+      ],
+      "dependencies": ["models", "pdfplumber"],
+      "algorithms": ["positional_pdf_line_grouping", "column_anchor_extraction", "paystub_deduplication", "confidence_scoring"],
+      "complexity": "high"
+    },
+    {
+      "name": "extraction-service",
+      "path": "src/contracheque_extractor/service.py",
+      "purpose": "Orquestrar parser e repositorio, mantendo persistencia habilitada por padrao.",
+      "primary_files": ["src/contracheque_extractor/service.py"],
+      "functions": [
+        {"name": "extract_from_bytes", "file": "src/contracheque_extractor/service.py", "params": ["pdf_bytes: bytes", "source_filename: str | None", "persist: bool = True"], "returns": "ExtractionResponse", "confidence": "confirmed"},
+        {"name": "extract_from_path", "file": "src/contracheque_extractor/service.py", "params": ["pdf_path: str | Path"], "returns": "ExtractionResponse", "confidence": "confirmed"}
+      ],
+      "entities": [],
+      "business_rules": [{"description": "Persistencia acontece por padrao apos parse bem-sucedido.", "location": "src/contracheque_extractor/service.py:18", "confidence": "confirmed"}],
+      "dependencies": ["pdf-parser", "sqlite-repository", "models"],
+      "algorithms": [],
+      "complexity": "low"
+    },
+    {
+      "name": "sqlite-repository",
+      "path": "src/contracheque_extractor/repository.py",
+      "purpose": "Persistir e consultar snapshots de extracoes em SQLite.",
+      "primary_files": ["src/contracheque_extractor/repository.py"],
+      "functions": [
+        {"name": "save_extraction", "file": "src/contracheque_extractor/repository.py", "params": ["response: ExtractionResponse", "source_filename: str | None"], "returns": "PersistenceInfo", "confidence": "confirmed"},
+        {"name": "list_servers", "file": "src/contracheque_extractor/repository.py", "params": ["limit: int = 50"], "returns": "list[StoredServerSummary]", "confidence": "confirmed"},
+        {"name": "get_server", "file": "src/contracheque_extractor/repository.py", "params": ["server_id: str"], "returns": "StoredServerRecord | None", "confidence": "confirmed"},
+        {"name": "delete_server", "file": "src/contracheque_extractor/repository.py", "params": ["server_id: str"], "returns": "bool", "confidence": "confirmed"}
+      ],
+      "entities": [{"name": "extraction_runs", "fields": [{"name": "id", "type": "TEXT", "required": true}, {"name": "stored_at", "type": "TEXT", "required": true}], "confidence": "confirmed"}, {"name": "server_snapshots", "fields": [{"name": "server_id", "type": "TEXT", "required": true}, {"name": "payload_json", "type": "TEXT", "required": true}], "confidence": "confirmed"}],
+      "business_rules": [{"description": "Lista de servidores usa apenas o snapshot mais recente por server_id.", "location": "src/contracheque_extractor/repository.py", "confidence": "confirmed"}],
+      "dependencies": ["sqlite3", "models"],
+      "algorithms": ["latest_snapshot_query", "period_key_sorting"],
+      "complexity": "medium"
+    },
+    {
+      "name": "frontend-app",
+      "path": "frontend/src/App.tsx",
+      "purpose": "Interface React para upload, listagem, detalhe, exclusao e calculo retroativo.",
+      "primary_files": ["frontend/src/App.tsx", "frontend/src/main.tsx", "frontend/src/styles.css"],
+      "functions": [
+        {"name": "HomePage", "file": "frontend/src/App.tsx", "params": [], "returns": "JSX", "confidence": "confirmed"},
+        {"name": "ServerDetailPage", "file": "frontend/src/App.tsx", "params": ["serverId: string"], "returns": "JSX", "confidence": "confirmed"},
+        {"name": "buildPaystubCalculationRows", "file": "frontend/src/App.tsx", "params": ["server", "selectedRemunerationGroupPrefix", "appointmentDate"], "returns": "PaystubCalculationRow[]", "confidence": "confirmed"}
+      ],
+      "entities": [],
+      "business_rules": [{"description": "Rota de detalhe usa hash #/servers/{server_id}.", "location": "frontend/src/App.tsx", "confidence": "confirmed"}],
+      "dependencies": ["promotion-calculator", "legal-remuneration-base", "backend-api"],
+      "algorithms": ["client_side_routing", "frontend_paystub_deduplication", "annual_adjustment_rows"],
+      "complexity": "high"
+    },
+    {
+      "name": "legal-remuneration-base",
+      "path": "frontend/src/data/remunerationBase.ts",
+      "purpose": "Catalogar fontes legais, registros remuneratorios canonicos e lookup por vigencia/grupo/classe.",
+      "primary_files": ["frontend/src/data/remunerationBase.ts"],
+      "functions": [
+        {"name": "getApplicableReadyCanonicalRemunerationRecord", "file": "frontend/src/data/remunerationBase.ts", "params": ["RemunerationLookupInput"], "returns": "CanonicalRemunerationRecord | undefined", "confidence": "confirmed"},
+        {"name": "getRemunerationGroupFromRole", "file": "frontend/src/data/remunerationBase.ts", "params": ["role"], "returns": "string | null", "confidence": "confirmed"}
+      ],
+      "entities": [{"name": "LegalTableSource", "fields": [{"name": "id", "type": "CAT-*", "required": true}, {"name": "document", "type": "string", "required": true}], "confidence": "confirmed"}, {"name": "CanonicalRemunerationRecord", "fields": [{"name": "classe", "type": "string | null", "required": true}, {"name": "referencia", "type": "string | null", "required": true}, {"name": "vencimento", "type": "number | null", "required": true}], "confidence": "confirmed"}],
+      "business_rules": [{"description": "Lookup exige classe, referencia, grupo/publico, fonte da timeline e vigencia compativel.", "location": "frontend/src/data/remunerationBase.ts", "confidence": "confirmed"}],
+      "dependencies": ["remuneration-laws"],
+      "algorithms": ["legal_catalog_manifest", "timeline_lookup", "role_to_remuneration_group"],
+      "complexity": "high"
+    },
+    {
+      "name": "promotion-calculator",
+      "path": "frontend/src/data/promotionCalculator.ts",
+      "purpose": "Calcular valores recebidos, devidos, diferenca e retroativo por competencia de contracheque.",
+      "primary_files": ["frontend/src/data/promotionCalculator.ts"],
+      "functions": [
+        {"name": "calculatePromotionRow", "file": "frontend/src/data/promotionCalculator.ts", "params": ["PromotionCalculationInput"], "returns": "PromotionCalculationRow", "confidence": "confirmed"},
+        {"name": "getPromotionRuleFromAppointmentDate", "file": "frontend/src/data/promotionCalculator.ts", "params": ["appointmentDate", "currentClassRef", "groupLabel", "referenceDate"], "returns": "PromotionClassRefRule | undefined", "confidence": "confirmed"},
+        {"name": "isWithinRetroactiveWindow", "file": "frontend/src/data/promotionCalculator.ts", "params": ["referenceDate", "currentDate"], "returns": "boolean", "confidence": "confirmed"}
+      ],
+      "entities": [{"name": "PromotionCalculationRow", "fields": [{"name": "referenceDate", "type": "string | null", "required": true}, {"name": "difference", "type": "number | null", "required": true}, {"name": "status", "type": "PromotionCalculationStatus", "required": true}], "confidence": "confirmed"}],
+      "business_rules": [{"description": "Janela retroativa e limitada a 60 meses.", "location": "frontend/src/data/promotionCalculator.ts", "confidence": "confirmed"}, {"description": "Risco de vida e calculado como 20% do vencimento devido.", "location": "frontend/src/data/promotionCalculator.ts", "confidence": "confirmed"}],
+      "dependencies": ["legal-remuneration-base"],
+      "algorithms": ["retroactive_window", "career_progression", "medical_horizontal_progression", "amount_breakdown"],
+      "complexity": "high"
+    },
+    {
+      "name": "remuneration-laws",
+      "path": "frontend/src/remunerations",
+      "purpose": "Fornecer registros remuneratorios canonicos por lei para consumo da base juridica.",
+      "primary_files": ["frontend/src/remunerations/lei4852-2019.ts", "frontend/src/remunerations/lei5771-2022.ts", "frontend/src/remunerations/lei5928-2022.ts", "frontend/src/remunerations/lei6460-2023.ts", "frontend/src/remunerations/lei7014-2024.ts", "frontend/src/remunerations/lei7799-2025.ts"],
+      "functions": [],
+      "entities": [{"name": "readyCanonicalRemunerationRecords", "fields": [], "confidence": "confirmed"}],
+      "business_rules": [],
+      "dependencies": [],
+      "algorithms": [],
+      "complexity": "medium"
+    },
+    {
+      "name": "legal-docs",
+      "path": "docs",
+      "purpose": "Armazenar fontes legais em PDF e Markdown usadas para catalogo e saneamento de remuneracoes.",
+      "primary_files": ["docs/09 - CARTILHA PROMOÇÃO.md", "docs/LEI N. 4.852, DE 12 DE JUNHO DE 2019.md", "docs/Lei n. 5.771, DE 10 DE JANEIRO DE 2022.md", "docs/LEI Nº 7.799, DE 20 DE OUTUBRO DE 2025.md"],
+      "functions": [],
+      "entities": [],
+      "business_rules": [],
+      "dependencies": [],
+      "algorithms": [],
+      "complexity": "medium"
+    },
+    {
+      "name": "tests",
+      "path": "tests",
+      "purpose": "Validar parser, servico, repositorio e endpoints principais.",
+      "primary_files": ["tests/test_api.py", "tests/test_service.py"],
+      "functions": [],
+      "entities": [],
+      "business_rules": [{"description": "Testes documentam comportamento esperado de deduplicacao, score, id deterministico e endpoints de snapshot.", "location": "tests", "confidence": "confirmed"}],
+      "dependencies": ["pytest", "fastapi.testclient"],
+      "algorithms": [],
+      "complexity": "medium"
+    }
+  ]
+}

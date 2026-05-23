@@ -1,0 +1,147 @@
+{
+  "generated_at": "2026-05-14T21:55:43Z",
+  "project_root": "D:\\projetos\\DEVEX\\devex3\\calculadora-Juridica",
+  "languages": [
+    {
+      "name": "Python",
+      "extensions": [".py"],
+      "file_count": 10
+    },
+    {
+      "name": "TypeScript",
+      "extensions": [".ts", ".tsx"],
+      "file_count": 14
+    },
+    {
+      "name": "Markdown",
+      "extensions": [".md"],
+      "file_count": 11
+    },
+    {
+      "name": "JSON",
+      "extensions": [".json"],
+      "file_count": 4
+    },
+    {
+      "name": "CSS",
+      "extensions": [".css"],
+      "file_count": 1
+    },
+    {
+      "name": "HTML",
+      "extensions": [".html"],
+      "file_count": 1
+    }
+  ],
+  "primary_language": "Python",
+  "frameworks": [
+    {
+      "name": "FastAPI",
+      "version": ">=0.116.1,<0.117.0",
+      "source": "pyproject.toml"
+    },
+    {
+      "name": "pdfplumber",
+      "version": ">=0.11.9,<0.12.0",
+      "source": "pyproject.toml"
+    },
+    {
+      "name": "React",
+      "version": "^19.2.0",
+      "source": "frontend/package.json"
+    },
+    {
+      "name": "Vite",
+      "version": "^7.1.12",
+      "source": "frontend/package.json"
+    },
+    {
+      "name": "TypeScript",
+      "version": "^5.9.3",
+      "source": "frontend/package.json"
+    },
+    {
+      "name": "pytest",
+      "version": ">=8.4.2,<9.0.0",
+      "source": "pyproject.toml"
+    }
+  ],
+  "package_manager": "python-build-system + npm",
+  "entry_points": [
+    {
+      "path": "src/contracheque_extractor/api.py",
+      "type": "server_entry"
+    },
+    {
+      "path": "src/contracheque_extractor/cli.py",
+      "type": "cli_entry"
+    },
+    {
+      "path": "frontend/src/main.tsx",
+      "type": "frontend_entry"
+    },
+    {
+      "path": "frontend/index.html",
+      "type": "app_entry"
+    }
+  ],
+  "config_files": [
+    "pyproject.toml",
+    "frontend/package.json",
+    "frontend/package-lock.json",
+    "frontend/tsconfig.json",
+    "frontend/tsconfig.node.json",
+    "frontend/vite.config.ts",
+    "frontend/vite.config.js",
+    "frontend/vite.config.d.ts"
+  ],
+  "ci_cd": [],
+  "docker": {},
+  "database_hints": [
+    {
+      "path": "data/contracheques.db",
+      "type": "sqlite_database"
+    },
+    {
+      "path": "src/contracheque_extractor/repository.py",
+      "type": "inline_sql_schema"
+    }
+  ],
+  "test_framework": "pytest",
+  "test_file_count": 2,
+  "modules": [
+    "backend-api",
+    "cli",
+    "models",
+    "pdf-parser",
+    "extraction-service",
+    "sqlite-repository",
+    "frontend-app",
+    "legal-remuneration-base",
+    "promotion-calculator",
+    "remuneration-laws",
+    "legal-docs",
+    "tests"
+  ],
+  "total_files": 54,
+  "organization_suggestion": {
+    "granularity": "endpoint",
+    "rationale": "O backend concentra as rotas em `src/contracheque_extractor/api.py`, tornando endpoints o eixo mais objetivo para as specs iniciais.",
+    "signals": [
+      {
+        "type": "centralized_routing",
+        "evidence": ["src/contracheque_extractor/api.py"]
+      },
+      {
+        "type": "module_files",
+        "evidence": [
+          "src/contracheque_extractor/parser.py",
+          "src/contracheque_extractor/repository.py",
+          "frontend/src/data/promotionCalculator.ts",
+          "frontend/src/data/remunerationBase.ts"
+        ]
+      }
+    ],
+    "features": []
+  }
+}

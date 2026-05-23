@@ -1,0 +1,69 @@
+﻿# Reversa â€” ConfiguraÃ§Ã£o do Projeto
+# Este arquivo Ã© gerenciado pelo instalador. Para customizaÃ§Ãµes, edite config.user.toml
+
+[project]
+name = "calculadora-Juridica"
+version = "1.0.0"
+
+[user]
+name = "Alexandre"
+chat_language = "pt-br"
+doc_language = "PortuguÃªs"
+
+[output]
+folder = "_reversa_sdd"
+
+[agents]
+installed = [
+  "reversa",
+  "reversa-scout",
+  "reversa-archaeologist",
+  "reversa-detective",
+  "reversa-architect",
+  "reversa-writer",
+  "reversa-reviewer",
+  "reversa-visor",
+  "reversa-data-master",
+  "reversa-design-system",
+  "reversa-agents-help",
+  "reversa-reconstructor",
+  "reversa-migrate",
+  "reversa-paradigm-advisor",
+  "reversa-curator",
+  "reversa-strategist",
+  "reversa-designer",
+  "reversa-screen-translator",
+  "reversa-inspector",
+  "reversa-forward",
+  "reversa-requirements",
+  "reversa-clarify",
+  "reversa-plan",
+  "reversa-to-do",
+  "reversa-audit",
+  "reversa-quality",
+  "reversa-coding",
+  "reversa-principles",
+  "reversa-resume",
+  "reversa-pricing-profile",
+  "reversa-pricing-size",
+  "reversa-pricing-estimate"
+]
+
+[engines]
+installed = [
+  "codex"
+]
+
+[analysis]
+answer_mode = "file"
+doc_level = "detalhado"
+
+# OrganizaÃ§Ã£o das specs geradas pelos agentes.
+# Esta seÃ§Ã£o Ã© preenchida pelo Reversa apÃ³s o Scout sugerir uma estrutura
+# e o usuÃ¡rio confirmar a escolha no menu (logo apÃ³s a pergunta de doc_level).
+# Para reapresentar o menu, remova a seÃ§Ã£o [specs]
+layout = "feature-folder"
+granularity = "endpoint"
+custom_folders = []
+scout_suggestion = "endpoint"
+decided_at = "2026-05-14T22:02:41Z"

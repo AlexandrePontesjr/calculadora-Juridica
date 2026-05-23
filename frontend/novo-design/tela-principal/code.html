@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-fixed": "#dbe1ff",
+                    "on-primary-container": "#90a8ff",
+                    "surface-container": "#e5eeff",
+                    "secondary": "#0051d5",
+                    "on-background": "#0b1c30",
+                    "tertiary-fixed": "#6ffbbe",
+                    "tertiary": "#00311f",
+                    "tertiary-container": "#004a31",
+                    "surface-container-low": "#eff4ff",
+                    "surface-tint": "#4059aa",
+                    "surface-container-high": "#dce9ff",
+                    "inverse-surface": "#213145",
+                    "on-secondary": "#ffffff",
+                    "primary-fixed": "#dce1ff",
+                    "primary-container": "#1e3a8a",
+                    "on-tertiary-fixed-variant": "#005236",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary-fixed-variant": "#003ea8",
+                    "primary": "#00236f",
+                    "on-secondary-container": "#fefcff",
+                    "surface-bright": "#f8f9ff",
+                    "background": "#f8f9ff",
+                    "surface-container-highest": "#d3e4fe",
+                    "on-primary-fixed": "#00164e",
+                    "on-primary-fixed-variant": "#264191",
+                    "inverse-on-surface": "#eaf1ff",
+                    "surface-variant": "#d3e4fe",
+                    "on-error-container": "#93000a",
+                    "secondary-fixed-dim": "#b4c5ff",
+                    "error": "#ba1a1a",
+                    "surface-dim": "#cbdbf5",
+                    "on-error": "#ffffff",
+                    "tertiary-fixed-dim": "#4edea3",
+                    "on-tertiary-container": "#27c38a",
+                    "on-tertiary-fixed": "#002113",
+                    "on-surface-variant": "#444651",
+                    "on-surface": "#0b1c30",
+                    "on-secondary-fixed": "#00174b",
+                    "on-primary": "#ffffff",
+                    "secondary-container": "#316bf3",
+                    "primary-fixed-dim": "#b6c4ff",
+                    "inverse-primary": "#b6c4ff",
+                    "outline-variant": "#c5c5d3",
+                    "error-container": "#ffdad6",
+                    "surface-container-lowest": "#ffffff",
+                    "surface": "#f8f9ff",
+                    "outline": "#757682"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "margin-mobile": "16px",
+                    "container-max-width": "1440px",
+                    "gutter": "24px",
+                    "margin-desktop": "32px",
+                    "base": "8px"
+            },
+            "fontFamily": {
+                    "data-mono": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "data-mono": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-md": ["13px", {"lineHeight": "18px", "fontWeight": "600"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface">
+<!-- TopNavBar -->
+<header class="w-full h-16 bg-surface-bright border-b border-outline-variant fixed top-0 z-50">
+<div class="flex justify-between items-center px-margin-desktop max-w-container-max-width mx-auto h-full">
+<div class="flex items-center gap-8">
+<span class="text-headline-sm font-headline-sm font-bold text-primary">LexAdmin Judicial</span>
+<nav class="hidden md:flex items-center gap-6 h-full">
+<a class="text-secondary border-b-2 border-secondary font-semibold pb-1 font-body-md text-body-md" href="#">Dashboard</a>
+<a class="text-on-surface-variant font-medium hover:text-secondary transition-colors duration-200 font-body-md text-body-md" href="#">Analytics</a>
+<a class="text-on-surface-variant font-medium hover:text-secondary transition-colors duration-200 font-body-md text-body-md" href="#">Reports</a>
+<a class="text-on-surface-variant font-medium hover:text-secondary transition-colors duration-200 font-body-md text-body-md" href="#">Settings</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="bg-primary text-on-primary px-4 py-2 rounded-lg font-label-md text-label-md flex items-center gap-2 cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined">add</span>
+                    New Extraction
+                </button>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-outline cursor-pointer" data-icon="notifications">notifications</span>
+<span class="material-symbols-outlined text-outline cursor-pointer" data-icon="help">help</span>
+<img alt="Judicial Clerk Profile" class="w-8 h-8 rounded-full border border-outline-variant object-cover" data-alt="A professional portrait of a senior judicial clerk with a confident expression, wearing a tailored navy blue blazer. The background is a blurred, high-end law library with rows of leather-bound books and soft golden lighting. The visual style is crisp, high-resolution corporate photography with a warm, authoritative atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjzD32lMFnXjqWPflBB49-VetOznQDE3FhHIJbtxjD68nqXatoNTVUPgv6bOAhA2Iy7SqNHxmPTeI9MHxZky98pDLrZU6vf0UWob5E5QUkh3WSNKq_8y38FysqvdYgF9tENIber7ouyCx6meuFmcKmU7RabtmGJjHI20HuF5Z71GST8fdhOzEDIOfpLuGDaR81pvx6z5-bkZf1E3a0TV93UygBQOoKkcP11i7vGl8I2nqdJie_cUD_kmLqW8XgSTFFDRcjear7MYCF"/>
+</div>
+</div>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container-low border-r border-outline-variant pt-16 flex flex-col">
+<div class="flex flex-col h-full py-base px-4">
+<div class="py-6 flex flex-col items-center border-b border-outline-variant mb-4">
+<div class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-3">
+<span class="material-symbols-outlined text-on-primary text-2xl" data-icon="account_balance">account_balance</span>
+</div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface text-center">Judiciary Portal</h2>
+<p class="font-label-md text-label-md text-on-surface-variant">Administrative Division</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 bg-secondary text-on-secondary rounded-lg font-bold transition-all duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="gavel">gavel</span>
+<span class="font-label-md text-label-md">Judicial Cases</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-secondary-fixed hover:text-on-secondary-fixed rounded-lg font-medium transition-all duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="badge">badge</span>
+<span class="font-label-md text-label-md">Public Servants</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-secondary-fixed hover:text-on-secondary-fixed rounded-lg font-medium transition-all duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span class="font-label-md text-label-md">Extraction Log</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-secondary-fixed hover:text-on-secondary-fixed rounded-lg font-medium transition-all duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="font-label-md text-label-md">Audit Trail</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-secondary-fixed hover:text-on-secondary-fixed rounded-lg font-medium transition-all duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="archive">archive</span>
+<span class="font-label-md text-label-md">Archived</span>
+</a>
+</nav>
+<div class="pt-4 border-t border-outline-variant space-y-1">
+<button class="w-full bg-outline-variant text-on-surface font-bold py-3 px-4 rounded-lg flex items-center justify-center gap-2 mb-4 hover:bg-outline transition-colors">
+<span class="material-symbols-outlined" data-icon="download">download</span>
+                    Export Dataset
+                </button>
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:text-secondary font-medium transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="contact_support">contact_support</span>
+<span class="font-label-md text-label-md">Support</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:text-secondary font-medium transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="menu_book">menu_book</span>
+<span class="font-label-md text-label-md">User Guide</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="ml-64 pt-16 min-h-screen">
+<div class="max-w-container-max-width mx-auto px-margin-desktop py-gutter">
+<!-- Header Section -->
+<section class="mb-10">
+<h1 class="font-headline-lg text-headline-lg text-primary mb-2">Contracheque Extractor</h1>
+<h2 class="font-headline-sm text-headline-sm text-on-surface-variant mb-4">Importe um PDF e valide a extracao em poucos segundos.</h2>
+<div class="bg-surface-container-high p-4 rounded-lg border-l-4 border-primary max-w-3xl">
+<p class="font-body-md text-body-md text-on-surface">
+                        Interface local em React para enviar um contracheque PDF ao backend FastAPI e abrir a pagina detalhada do servidor persistido logo apos a extracao.
+                    </p>
+</div>
+</section>
+<!-- Bento Layout Content -->
+<div class="grid grid-cols-12 gap-gutter">
+<!-- Upload Area (Bento Large Card) -->
+<div class="col-span-12 lg:col-span-5 bg-surface-container-lowest p-margin-desktop rounded-xl border border-outline-variant shadow-sm flex flex-col">
+<div class="flex items-center gap-3 mb-6">
+<div class="w-10 h-10 bg-secondary-fixed text-primary rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="upload_file">upload_file</span>
+</div>
+<span class="font-headline-sm text-headline-sm text-on-surface">Upload Section</span>
+</div>
+<div class="space-y-6">
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-2">Arquivo PDF</label>
+<div class="border-2 border-dashed border-outline-variant rounded-lg p-8 flex flex-col items-center justify-center bg-surface-bright hover:border-secondary transition-colors cursor-pointer group">
+<span class="material-symbols-outlined text-outline group-hover:text-secondary text-4xl mb-3" data-icon="cloud_upload">cloud_upload</span>
+<p class="font-body-md text-body-md text-outline mb-1">Nenhum arquivo selecionado</p>
+<p class="font-label-md text-label-md text-outline-variant">Selecione um único contracheque consolidado em PDF.</p>
+</div>
+</div>
+<button class="w-full bg-primary text-on-primary font-bold py-4 rounded-lg flex items-center justify-center gap-3 hover:bg-primary-container transition-all shadow-md active:scale-[0.98]">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+                            Enviar para extracao
+                        </button>
+</div>
+<div class="mt-auto pt-8">
+<div class="flex items-center gap-4 p-4 bg-surface-container rounded-lg">
+<span class="material-symbols-outlined text-secondary" data-icon="info">info</span>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                                Sistema otimizado para padrões de folhas de pagamento do Tribunal de Justiça.
+                            </p>
+</div>
+</div>
+</div>
+<!-- Servers Table (Bento Extra Wide Card) -->
+<div class="col-span-12 lg:col-span-7 bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm flex flex-col overflow-hidden">
+<div class="px-margin-desktop pt-margin-desktop pb-6 flex justify-between items-end border-b border-surface-container">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Servidores</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Servidores existentes</p>
+</div>
+<div class="flex gap-2">
+<span class="material-symbols-outlined p-2 text-outline-variant cursor-pointer hover:text-secondary" data-icon="filter_list">filter_list</span>
+<span class="material-symbols-outlined p-2 text-outline-variant cursor-pointer hover:text-secondary" data-icon="search">search</span>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-outline-variant">
+<th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Servidor</th>
+<th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Matricula</th>
+<th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-center">Ultimo periodo</th>
+<th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-right">Contracheques</th>
+<th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-right">Acoes</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<!-- Table Row 1 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-surface-container-highest flex items-center justify-center text-primary font-bold">
+                                                P
+                                            </div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">PAULO WAGNER BRANDAO DE SOUZA</p>
+<p class="font-data-mono text-data-mono text-outline-variant text-[10px]">server_id: 97c4bdf680a1...</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 font-data-mono text-data-mono text-on-surface">
+                                        137.550-4
+                                    </td>
+<td class="px-6 py-4 text-center">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary/10 text-secondary">
+                                            02/2026
+                                        </span>
+</td>
+<td class="px-6 py-4 text-right font-data-mono text-data-mono text-on-surface">
+                                        145
+                                    </td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="flex items-center gap-1 bg-primary text-on-primary px-3 py-1.5 rounded text-xs font-bold hover:bg-primary-container transition-colors">
+<span class="material-symbols-outlined text-[16px]" data-icon="open_in_new">open_in_new</span>
+                                                Abrir
+                                            </button>
+<button class="flex items-center gap-1 border border-error text-error px-3 py-1.5 rounded text-xs font-bold hover:bg-error-container transition-colors">
+<span class="material-symbols-outlined text-[16px]" data-icon="delete">delete</span>
+                                                Deletar
+                                            </button>
+</div>
+</td>
+</tr>
+<!-- Filler Row for visual structure -->
+<tr class="bg-surface-bright/50">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3 grayscale opacity-40">
+<div class="w-8 h-8 rounded bg-surface-variant"></div>
+<div class="h-4 w-32 bg-surface-variant rounded"></div>
+</div>
+</td>
+<td class="px-6 py-4"><div class="h-4 w-16 bg-surface-variant rounded opacity-20"></div></td>
+<td class="px-6 py-4"><div class="h-6 w-16 bg-surface-variant rounded-full mx-auto opacity-20"></div></td>
+<td class="px-6 py-4"><div class="h-4 w-8 bg-surface-variant rounded ml-auto opacity-20"></div></td>
+<td class="px-6 py-4"></td>
+</tr>
+<tr class="bg-white">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3 grayscale opacity-30">
+<div class="w-8 h-8 rounded bg-surface-variant"></div>
+<div class="h-4 w-40 bg-surface-variant rounded"></div>
+</div>
+</td>
+<td class="px-6 py-4"><div class="h-4 w-16 bg-surface-variant rounded opacity-10"></div></td>
+<td class="px-6 py-4"><div class="h-6 w-16 bg-surface-variant rounded-full mx-auto opacity-10"></div></td>
+<td class="px-6 py-4"><div class="h-4 w-8 bg-surface-variant rounded ml-auto opacity-10"></div></td>
+<td class="px-6 py-4"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="mt-auto p-4 border-t border-outline-variant flex justify-between items-center bg-surface-bright">
+<span class="font-label-md text-label-md text-outline">Mostrando 1 de 1 servidor</span>
+<div class="flex gap-2">
+<button class="p-1 border border-outline-variant rounded disabled:opacity-30" disabled="">
+<span class="material-symbols-outlined" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="p-1 border border-outline-variant rounded">
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Summary/Stats Section -->
+<div class="col-span-12 grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant">
+<p class="font-label-md text-label-md text-on-surface-variant mb-2">Total de Extrações (24h)</p>
+<div class="flex items-baseline gap-2">
+<span class="font-headline-lg text-headline-lg text-primary">42</span>
+<span class="text-tertiary font-bold text-sm">↑ 12%</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant">
+<p class="font-label-md text-label-md text-on-surface-variant mb-2">Tempo Médio de Processamento</p>
+<div class="flex items-baseline gap-2">
+<span class="font-headline-lg text-headline-lg text-primary">1.2s</span>
+<span class="text-outline-variant font-medium text-sm">ms/página</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant">
+<p class="font-label-md text-label-md text-on-surface-variant mb-2">Status do Backend</p>
+<div class="flex items-center gap-2 mt-1">
+<span class="w-3 h-3 bg-tertiary-fixed-dim rounded-full"></span>
+<span class="font-headline-sm text-headline-sm text-on-tertiary-container">Conectado (FastAPI)</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>
