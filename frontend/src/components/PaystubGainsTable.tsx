@@ -39,7 +39,7 @@ export function PaystubGainsTable({
     <>
       <div className="calculation-group-toolbar no-print">
         <div>
-          <strong>Valores e referencias por competencia</strong>
+          <strong>Valores e referências por competência</strong>
           <span>{calculationRows.length} linha(s) agrupadas por ano</span>
         </div>
         <div className="calculation-group-toolbar__actions">
@@ -85,12 +85,12 @@ export function PaystubGainsTable({
               <div>
                 <strong>{group.year}</strong>
                 <span>
-                  {group.rows.length} competencia(s) | {group.summary.calculatedRows} calculada(s)
+                  {group.rows.length} competência(s) | {group.summary.calculatedRows} calculada(s)
                 </span>
               </div>
               <dl>
                 <div>
-                  <dt>Diferencas</dt>
+                  <dt>Diferenças</dt>
                   <dd>{formatCurrency(group.summary.totalDifference)}</dd>
                 </div>
                 <div>
@@ -118,7 +118,7 @@ export function PaystubGainsTable({
                         <dd>{formatCurrency(calculation.due.total)}</dd>
                       </div>
                       <div>
-                        <dt>Diferenca</dt>
+                        <dt>Diferença</dt>
                         <dd>{formatCurrency(calculation.difference)}</dd>
                       </div>
                       <div>
@@ -144,7 +144,7 @@ export function PaystubGainsTable({
                           <dd>{formatCurrency(calculation.received.baseSalary)}</dd>
                         </div>
                         <div>
-                          <dt>Grat. saude</dt>
+                          <dt>Grat. saúde</dt>
                           <dd>{formatCurrency(calculation.received.healthBonus)}</dd>
                         </div>
                         <div>
@@ -162,7 +162,7 @@ export function PaystubGainsTable({
                           <dd>{formatCurrency(calculation.due.baseSalary)}</dd>
                         </div>
                         <div>
-                          <dt>Grat. saude</dt>
+                          <dt>Grat. saúde</dt>
                           <dd>{formatCurrency(calculation.due.healthBonus)}</dd>
                         </div>
                         <div>
@@ -174,7 +174,7 @@ export function PaystubGainsTable({
                   ) : null}
 
                   <div className="calculation-row-card__source">
-                    <span>Referencia do calculo</span>
+                    <span>Referência do cálculo</span>
                     <strong>{source}</strong>
                   </div>
                 </article>
@@ -191,23 +191,23 @@ export function PaystubGainsTable({
               <th rowSpan={2}>MES</th>
               <th colSpan={5}>VENCIMENTO RECEBIDO</th>
               <th colSpan={5}>VENCIMENTO DEVIDO</th>
-              <th rowSpan={2}>DIFERENCA</th>
+              <th rowSpan={2}>DIFERENÇA</th>
               <th rowSpan={2}>GRAT. DE CURSO</th>
               <th rowSpan={2}>RETROATIVO</th>
               <th className="paystub-gains-table__source-heading" rowSpan={2}>
-                REFERENCIA DO CALCULO
+                REFERÊNCIA DO CÁLCULO
               </th>
             </tr>
             <tr>
               <th>CLASS/RF.</th>
               <th>VENC</th>
-              <th>GRAT.SAUDE</th>
-              <th>GRAT.RISC.VIDA</th>
+              <th>GRAT. SAÚDE</th>
+              <th>GRAT. RISC. VIDA</th>
               <th>SOMA</th>
               <th>CLASS/RF.</th>
               <th>VENC</th>
-              <th>GRAT.SAUDE</th>
-              <th>GRAT.RISC.VIDA</th>
+              <th>GRAT. SAÚDE</th>
+              <th>GRAT. RISC. VIDA</th>
               <th>SOMA</th>
             </tr>
           </thead>

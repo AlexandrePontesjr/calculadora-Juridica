@@ -63,11 +63,11 @@ function getCompetenceLabel(row: PaystubCalculationRow): string {
   }
 
   if (month === 13) {
-    return "13o";
+    return "13º";
   }
 
   if (month === 14) {
-    return "FERIAS";
+    return "FÉRIAS";
   }
 
   return row.displayPeriod;
@@ -94,14 +94,14 @@ function buildSummaryRows({
   server: PublicServer;
 }): ExcelCell[][] {
   return [
-    ["Relatorio de Calculos"],
+    ["Relatório de cálculos"],
     ["Servidor", server.personal_info.name],
     ["Cargo", server.personal_info.role ?? "-"],
-    ["Matricula", server.personal_info.employee_number ?? "-"],
+    ["Matrícula", server.personal_info.employee_number ?? "-"],
     ["Registro", server.personal_info.registration_id ?? "-"],
     ["Data da posse", server.appointment_date ?? "-"],
-    ["Data de propositura da acao", actionDate ?? "-"],
-    ["Data de emissao", issuedAt],
+    ["Data de propositura da ação", actionDate ?? "-"],
+    ["Data de emissão", issuedAt],
     [],
   ];
 }
@@ -112,18 +112,18 @@ function buildCalculationRows(rows: PaystubCalculationRow[]): ExcelCell[][] {
       "MES",
       "RECEBIDO CLASS/RF.",
       "RECEBIDO VENC",
-      "RECEBIDO GRAT.SAUDE",
-      "RECEBIDO GRAT.RISC.VIDA",
+      "RECEBIDO GRAT. SAÚDE",
+      "RECEBIDO GRAT. RISC. VIDA",
       "RECEBIDO SOMA",
       "DEVIDO CLASS/RF.",
       "DEVIDO VENC",
-      "DEVIDO GRAT.SAUDE",
-      "DEVIDO GRAT.RISC.VIDA",
+      "DEVIDO GRAT. SAÚDE",
+      "DEVIDO GRAT. RISC. VIDA",
       "DEVIDO SOMA",
-      "DIFERENCA",
+      "DIFERENÇA",
       "GRAT. DE CURSO",
       "RETROATIVO",
-      "REFERENCIA DO CALCULO",
+      "REFERÊNCIA DO CÁLCULO",
     ],
     ...rows.map(({ displayPeriod, paystub, calculation, source }) => [
       displayPeriod,
@@ -152,15 +152,15 @@ function buildSpreadsheetRows(rows: PaystubCalculationRow[]): ExcelCell[][] {
       "MES",
       "RECEBIDO CLASS E/REF.",
       "RECEBIDO VENCIMENTO",
-      "RECEBIDO GRAT. DE SAUDE",
+      "RECEBIDO GRAT. DE SAÚDE",
       "RECEBIDO GRAT. RISCO DE VIDA",
       "RECEBIDO SOMA",
       "DEVIDO CLASS E/REF.",
       "DEVIDO VENCIMENTO",
-      "DEVIDO GRAT. DE SAUDE",
+      "DEVIDO GRAT. DE SAÚDE",
       "DEVIDO GRAT. RISCO DE VIDA",
       "DEVIDO SOMA",
-      "DIFERENCA",
+      "DIFERENÇA",
       "GRAT. DE CURSO",
       "RETROATIVO",
     ],
@@ -252,7 +252,7 @@ function buildWorkbookXml({
     </Style>
   </Styles>
   ${buildWorksheetXml({
-    name: "Calculo",
+    name: "Cálculo",
     rows: [...summaryRows, ...buildCalculationRows(calculationRows)],
   })}
   ${buildWorksheetXml({

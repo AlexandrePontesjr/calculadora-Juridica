@@ -80,22 +80,22 @@ export const defaultPromotionClassRefRules = [
   {
     startsAt: "2020-01-01",
     classRef: "D-1",
-    source: "Copia de PLANILHA PROMOCAO SES.xlsx: TABELA DE CALCULO",
+    source: "Cópia de PLANILHA PROMOÇÃO SES.xlsx: TABELA DE CÁLCULO",
   },
   {
     startsAt: "2021-01-01",
     classRef: "D-2",
-    source: "Copia de PLANILHA PROMOCAO SES.xlsx: TABELA DE CALCULO",
+    source: "Cópia de PLANILHA PROMOÇÃO SES.xlsx: TABELA DE CÁLCULO",
   },
   {
     startsAt: "2023-01-01",
     classRef: "D-3",
-    source: "Copia de PLANILHA PROMOCAO SES.xlsx: TABELA DE CALCULO",
+    source: "Cópia de PLANILHA PROMOÇÃO SES.xlsx: TABELA DE CÁLCULO",
   },
   {
     startsAt: "2025-01-01",
     classRef: "D-4",
-    source: "Copia de PLANILHA PROMOCAO SES.xlsx: TABELA DE CALCULO",
+    source: "Cópia de PLANILHA PROMOÇÃO SES.xlsx: TABELA DE CÁLCULO",
   },
 ] as const satisfies PromotionClassRefRule[];
 
@@ -104,7 +104,7 @@ export const PROMOTION_RETROACTIVE_WINDOW_MONTHS = 60;
 export const PROMOTION_ADDITIONAL_WINDOW_MONTHS = 12;
 
 const cartilhaPromotionSource =
-  "09 - CARTILHA PROMOCAO.md: Regra temporal de enquadramento por referencia";
+  "09 - CARTILHA PROMOÇÃO.md: Regra temporal de enquadramento por referência";
 
 const nonMedicalCareerClassSequences = {
   default: ["A", "B", "C", "D"],
@@ -378,7 +378,7 @@ function getMedicalRuleFromAppointmentDate({
   return {
     startsAt: referenceDate,
     classRef,
-    source: "09 - CARTILHA PROMOCAO.md: Progressao horizontal dos medicos",
+    source: "09 - CARTILHA PROMOÇÃO.md: Progressão horizontal dos médicos",
   };
 }
 

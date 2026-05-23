@@ -70,9 +70,9 @@ function AppShell({
           <span className="topbar__mark">
             <Gavel size={20} />
           </span>
-          <span>Calc-Juridica</span>
+          <span>Calc-Jurídica</span>
         </div>
-        <nav className="topbar__nav" aria-label="Navegacao principal">
+        <nav className="topbar__nav" aria-label="Navegação principal">
           <button
             className={currentSection === "dashboard" ? "topbar__link active" : "topbar__link"}
             onClick={navigateToHome}
@@ -82,13 +82,13 @@ function AppShell({
           </button>
         </nav>
         <div className="topbar__actions">
-          <button className="icon-button" type="button" aria-label="Notificacoes">
+          <button className="icon-button" type="button" aria-label="Notificações">
             <Bell size={19} />
           </button>
-          <button className="icon-button" type="button" aria-label="Configuracoes">
+          <button className="icon-button" type="button" aria-label="Configurações">
             <Settings size={19} />
           </button>
-          <div className="avatar" aria-label="Usuario">
+          <div className="avatar" aria-label="Usuário">
             CJ
           </div>
         </div>
@@ -127,7 +127,7 @@ function HomePage() {
       const message =
         requestError instanceof Error
           ? requestError.message
-          : "Nao foi possivel carregar os servidores existentes.";
+          : "Não foi possível carregar os servidores existentes.";
       setServerListError(message);
     } finally {
       setIsLoadingServers(false);
@@ -151,7 +151,7 @@ function HomePage() {
 
     if (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf")) {
       setSelectedFile(null);
-      setError("Selecione um arquivo PDF valido.");
+      setError("Selecione um arquivo PDF válido.");
       event.target.value = "";
       return;
     }
@@ -193,7 +193,7 @@ function HomePage() {
       const message =
         submissionError instanceof Error
           ? submissionError.message
-          : "Nao foi possivel conectar ao backend.";
+          : "Não foi possível conectar ao backend.";
       setError(message);
     } finally {
       setIsSubmitting(false);
@@ -226,7 +226,7 @@ function HomePage() {
       const message =
         requestError instanceof Error
           ? requestError.message
-          : "Nao foi possivel excluir o servidor.";
+          : "Não foi possível excluir o servidor.";
       setServerListError(message);
     } finally {
       setDeletingServerId(null);
@@ -237,16 +237,16 @@ function HomePage() {
     <AppShell currentSection="dashboard">
       <section className="page-heading">
         <div>
-          <p className="eyebrow">Contracheque extractor</p>
+          <p className="eyebrow">Extrator de contracheques</p>
           <h1>Importe, valide e acompanhe servidores.</h1>
           <p className="lede">
-            Envie um PDF consolidado, persista o snapshot local e abra o detalhamento judicial
-            assim que a extracao terminar.
+            Envie um PDF consolidado, salve o registro local e abra o detalhamento judicial
+            assim que a extração terminar.
           </p>
         </div>
         <div className="page-heading__note">
           <Info size={18} />
-          <span>Sistema otimizado para folhas de pagamento do Tribunal de Justica.</span>
+          <span>Sistema otimizado para folhas de pagamento do Tribunal de Justiça.</span>
         </div>
       </section>
 
@@ -257,7 +257,7 @@ function HomePage() {
               <UploadCloud size={23} />
             </span>
             <div>
-              <h2>Upload Section</h2>
+              <h2>Importação de PDF</h2>
               <p>Arquivo PDF</p>
             </div>
           </div>
@@ -275,22 +275,22 @@ function HomePage() {
             <span>
               {selectedFile
                 ? `${(selectedFile.size / 1024 / 1024).toFixed(2)} MB`
-                : "Selecione um unico contracheque consolidado em PDF."}
+                : "Selecione um único contracheque consolidado em PDF."}
             </span>
           </label>
 
           <button className="primary-action" disabled={isSubmitting || !selectedFile} type="submit">
             {isSubmitting ? <Loader2 className="spin" size={19} /> : <FileSpreadsheet size={19} />}
-            {isSubmitting ? "Processando PDF..." : "Enviar para extracao"}
+            {isSubmitting ? "Processando PDF..." : "Enviar para extração"}
           </button>
 
           {error ? <p className="status error">{error}</p> : null}
           {!error && isSubmitting ? (
-            <p className="status muted">O backend esta processando o arquivo enviado.</p>
+            <p className="status muted">O backend está processando o arquivo enviado.</p>
           ) : null}
           {!error && result?.persistence ? (
             <p className="status success">
-              Processamento concluido. {result.persistence.servers_saved} servidor(es) salvo(s).
+              Processamento concluído. {result.persistence.servers_saved} registro(s) de servidor salvo(s).
             </p>
           ) : null}
         </form>
@@ -336,10 +336,10 @@ function HomePage() {
                 <thead>
                   <tr>
                     <th>Servidor</th>
-                    <th>Matricula</th>
-                    <th>Ultimo periodo</th>
+                    <th>Matrícula</th>
+                    <th>Último período</th>
                     <th>Contracheques</th>
-                    <th>Acoes</th>
+                    <th>Ações</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -376,7 +376,7 @@ function HomePage() {
                             type="button"
                           >
                             <Trash2 size={15} />
-                            {deletingServerId === server.server_id ? "Excluindo..." : "Deletar"}
+                            {deletingServerId === server.server_id ? "Excluindo..." : "Excluir"}
                           </button>
                         </div>
                       </td>
@@ -391,17 +391,17 @@ function HomePage() {
 
       <section className="metric-row">
         <article>
-          <span>Total de extracoes</span>
+          <span>Total de extrações</span>
           <strong>{storedServers.length}</strong>
         </article>
         <article>
           <span>Status do backend</span>
           <strong className={serverListError ? "metric-error" : "metric-success"}>
-            {serverListError ? "Indisponivel" : "Conectado"}
+            {serverListError ? "Indisponível" : "Conectado"}
           </strong>
         </article>
         <article>
-          <span>Ultima carga</span>
+          <span>Última carga</span>
           <strong>{storedServers[0]?.latest_period ?? "-"}</strong>
         </article>
       </section>
@@ -457,7 +457,7 @@ function ServerDetailPage({ serverId }: { serverId: string }) {
           const message =
             requestError instanceof Error
               ? requestError.message
-              : "Nao foi possivel consultar o servidor persistido.";
+              : "Não foi possível consultar o servidor persistido.";
           setError(message);
           setRecord(null);
           setSelectedRemunerationGroupPrefix("");
@@ -569,7 +569,7 @@ function ServerDetailPage({ serverId }: { serverId: string }) {
       const message =
         requestError instanceof Error
           ? requestError.message
-          : "Nao foi possivel salvar a data da posse.";
+          : "Não foi possível salvar a data da posse.";
       setAppointmentDateStatus(message);
     } finally {
       setIsSavingAppointmentDate(false);
@@ -620,7 +620,7 @@ function ServerDetailPage({ serverId }: { serverId: string }) {
         const detail =
           typeof payload.detail === "string"
             ? payload.detail
-            : "Falha ao salvar data de propositura da acao.";
+            : "Falha ao salvar data de propositura da ação.";
         throw new Error(detail);
       }
 
@@ -631,7 +631,7 @@ function ServerDetailPage({ serverId }: { serverId: string }) {
       const message =
         requestError instanceof Error
           ? requestError.message
-          : "Nao foi possivel salvar a data de propositura da acao.";
+          : "Não foi possível salvar a data de propositura da ação.";
       setActionDateStatus(message);
     } finally {
       setIsSavingActionDate(false);
@@ -658,12 +658,12 @@ function ServerDetailPage({ serverId }: { serverId: string }) {
         <div>
           <button className="back-link no-print" onClick={navigateToHome} type="button">
             <ChevronLeft size={18} />
-            Voltar para importacao
+            Voltar para importação
           </button>
           <h1>{record?.server.personal_info.name ?? "Servidor"}</h1>
           <p>
             <ShieldCheck size={17} />
-            Detalhamento do servidor judiciario
+            Detalhamento do servidor judiciário
           </p>
         </div>
         <div className="print-actions no-print">
@@ -683,7 +683,7 @@ function ServerDetailPage({ serverId }: { serverId: string }) {
             type="button"
           >
             <Printer size={18} />
-            Imprimir calculo
+            Imprimir cálculo
           </button>
           <button
             className="print-button print-button--spreadsheet"
@@ -716,7 +716,7 @@ function ServerDetailPage({ serverId }: { serverId: string }) {
             <section className="side-card">
               <div className="side-card__title">
                 <Database size={20} />
-                <h2>Servidor Persistido</h2>
+                <h2>Servidor persistido</h2>
               </div>
               <dl className="compact-list">
                 <div>
@@ -745,7 +745,7 @@ function ServerDetailPage({ serverId }: { serverId: string }) {
                   <dd>{record.server.personal_info.role ?? "-"}</dd>
                 </div>
                 <div>
-                  <dt>Matricula</dt>
+                  <dt>Matrícula</dt>
                   <dd>{record.server.personal_info.employee_number ?? "-"}</dd>
                 </div>
                 <div>
@@ -753,9 +753,9 @@ function ServerDetailPage({ serverId }: { serverId: string }) {
                   <dd>{record.server.personal_info.registration_id ?? "-"}</dd>
                 </div>
                 <div>
-                  <dt>Periodos</dt>
+                  <dt>Períodos</dt>
                   <dd>
-                    {firstPeriod} ate {lastPeriod}
+                    {firstPeriod} até {lastPeriod}
                   </dd>
                 </div>
               </dl>
@@ -764,7 +764,7 @@ function ServerDetailPage({ serverId }: { serverId: string }) {
             <section className="side-card">
               <div className="side-card__title">
                 <Gauge size={20} />
-                <h2>Parametros</h2>
+                <h2>Parâmetros</h2>
               </div>
               <label className="field">
                 <span>Cargo na tabela</span>
@@ -802,7 +802,7 @@ function ServerDetailPage({ serverId }: { serverId: string }) {
                 </small>
               ) : null}
               <label className="field">
-                <span>Data de propositura da acao</span>
+                <span>Data de propositura da ação</span>
                 <input
                   aria-busy={isSavingActionDate}
                   onBlur={handleActionDateBlur}
@@ -828,7 +828,7 @@ function ServerDetailPage({ serverId }: { serverId: string }) {
               <section className="side-card side-card--warning">
                 <div className="side-card__title">
                   <BadgeInfo size={20} />
-                  <h2>Atencao</h2>
+                  <h2>Atenção</h2>
                 </div>
                 <dl className="compact-grid">
                   <div>
@@ -836,7 +836,7 @@ function ServerDetailPage({ serverId }: { serverId: string }) {
                     <dd>{unresolvedDueRows}</dd>
                   </div>
                   <div>
-                    <dt>Baixa confianca</dt>
+                    <dt>Baixa confiança</dt>
                     <dd>{lowConfidenceRows}</dd>
                   </div>
                 </dl>
@@ -856,8 +856,8 @@ function ServerDetailPage({ serverId }: { serverId: string }) {
           <section className={`report-panel print-mode--${printMode}`}>
             <div className="report-panel__header">
               <div>
-                <h2>Relatorio de Calculos</h2>
-                <p>Demonstrativo de diferencas remuneratorias</p>
+                <h2>Relatório de cálculos</h2>
+                <p>Demonstrativo de diferenças remuneratórias</p>
               </div>
               <span className="status-badge">
                 <CheckCircle2 size={15} />
@@ -867,11 +867,11 @@ function ServerDetailPage({ serverId }: { serverId: string }) {
 
             <div className="report-totals">
               <article>
-                <span>Competencias analisadas</span>
+                <span>Competências analisadas</span>
                 <strong>{calculationRows.length}</strong>
               </article>
               <article>
-                <span>Total das diferencas</span>
+                <span>Total das diferenças</span>
                 <strong>{formatCurrency(calculationSummary.totalDifference)}</strong>
               </article>
               <article className="report-totals__primary">
@@ -891,7 +891,7 @@ function ServerDetailPage({ serverId }: { serverId: string }) {
                   <dd>{record.server.personal_info.role ?? "-"}</dd>
                 </div>
                 <div>
-                  <dt>Cargo tabela</dt>
+                  <dt>Cargo na tabela</dt>
                   <dd>{selectedRemunerationGroupOption?.label ?? "-"}</dd>
                 </div>
                 <div>
@@ -899,7 +899,7 @@ function ServerDetailPage({ serverId }: { serverId: string }) {
                   <dd>{appointmentDate || "-"}</dd>
                 </div>
                 <div>
-                  <dt>Matricula</dt>
+                  <dt>Matrícula</dt>
                   <dd>{record.server.personal_info.employee_number ?? "-"}</dd>
                 </div>
                 <div>
@@ -911,18 +911,18 @@ function ServerDetailPage({ serverId }: { serverId: string }) {
                   <dd>{record.source_filename ?? "-"}</dd>
                 </div>
                 <div>
-                  <dt>Data de propositura da acao</dt>
+                  <dt>Data de propositura da ação</dt>
                   <dd>{actionDateIso}</dd>
                 </div>
                 <div>
-                  <dt>Data de emissao</dt>
+                  <dt>Data de emissão</dt>
                   <dd>{currentIssueDate}</dd>
                 </div>
                 <div>
-                  <dt>Modo de impressao</dt>
+                  <dt>Modo de impressão</dt>
                   <dd>
                     {printMode === "calculation"
-                      ? "Calculo por competencia"
+                      ? "Cálculo por competência"
                       : "Planilha completa"}
                   </dd>
                 </div>

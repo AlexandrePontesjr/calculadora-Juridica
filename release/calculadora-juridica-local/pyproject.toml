@@ -1,0 +1,27 @@
+[project]
+name = "contracheque-extractor"
+version = "0.1.0"
+description = "Backend para extracao de contracheques PDF de servidores publicos."
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "fastapi>=0.116.1,<0.117.0",
+    "pdfplumber>=0.11.9,<0.12.0",
+    "python-multipart>=0.0.20,<0.0.21",
+    "uvicorn>=0.38.0,<0.39.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "httpx>=0.28.1,<0.29.0",
+    "pytest>=8.4.2,<9.0.0",
+]
+
+[build-system]
+requires = ["setuptools>=80.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+

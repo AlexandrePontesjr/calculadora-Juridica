@@ -7,3 +7,4 @@
 - [pdf-layout-variants.md](pdf-layout-variants.md) - Diferencas relevantes entre layouts de contracheque PDF e impactos no parser/calculadora.
 - [frontend-judicial-print-report.md](frontend-judicial-print-report.md) - Fluxo do relatorio judicial imprimivel a partir dos calculos de promocao no detalhe do servidor.
 - [medical-progression-2012.md](medical-progression-2012.md) - Marco operacional de vigencia 2012 e gotcha da progressao medica especial.
+- [local-windows-build.md](local-windows-build.md) - Fluxo de pacote desktop local com FastAPI em /api e frontend Vite buildado.

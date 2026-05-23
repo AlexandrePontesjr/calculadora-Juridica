@@ -24,11 +24,11 @@ function getCompetenceLabel(row: PaystubCalculationRow): string {
   }
 
   if (month === 13) {
-    return "13o";
+    return "13º";
   }
 
   if (month === 14) {
-    return "FERIAS";
+    return "FÉRIAS";
   }
 
   return row.displayPeriod;
@@ -81,22 +81,22 @@ export function PaystubDetailsList({
             <thead>
               <tr>
                 <th rowSpan={2}>ANO</th>
-                <th rowSpan={2}>MES</th>
+                <th rowSpan={2}>MÊS</th>
                 <th colSpan={5}>VENCIMENTO RECEBIDO</th>
                 <th colSpan={5}>VENCIMENTO DEVIDO</th>
-                <th rowSpan={2}>DIFERENCA</th>
+                <th rowSpan={2}>DIFERENÇA</th>
                 <th rowSpan={2}>GRAT. DE CURSO</th>
                 <th rowSpan={2}>RETROATIVO</th>
               </tr>
               <tr>
                 <th>CLASS E/REF.</th>
                 <th>VENCIMENTO</th>
-                <th>GRAT. DE SAUDE</th>
+                <th>GRAT. DE SAÚDE</th>
                 <th>GRAT. RISCO DE VIDA</th>
                 <th>SOMA</th>
                 <th>CLASS E/REF.</th>
                 <th>VENCIMENTO</th>
-                <th>GRAT. DE SAUDE</th>
+                <th>GRAT. DE SAÚDE</th>
                 <th>GRAT. RISCO DE VIDA</th>
                 <th>SOMA</th>
               </tr>

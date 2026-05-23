@@ -38,14 +38,14 @@ export function ServerCard({
       <div className="server-card__header">
         <div>
           <h3>{server.personal_info.name}</h3>
-          <p>{server.personal_info.role ?? "Cargo nao informado"}</p>
+          <p>{server.personal_info.role ?? "Cargo não informado"}</p>
         </div>
         <code>{server.server_id.slice(0, 12)}...</code>
       </div>
 
       <dl className="server-meta">
         <div>
-          <dt>Matricula</dt>
+          <dt>Matrícula</dt>
           <dd>{server.personal_info.employee_number ?? "-"}</dd>
         </div>
         <div>
@@ -53,9 +53,9 @@ export function ServerCard({
           <dd>{server.personal_info.registration_id ?? "-"}</dd>
         </div>
         <div>
-          <dt>Periodos</dt>
+          <dt>Períodos</dt>
           <dd>
-            {firstPeriod} ate {lastPeriod}
+            {firstPeriod} até {lastPeriod}
           </dd>
         </div>
         <div>
@@ -64,7 +64,7 @@ export function ServerCard({
         </div>
       </dl>
 
-      <div className="server-card__view-tabs no-print" role="tablist" aria-label="Visualizacao">
+      <div className="server-card__view-tabs no-print" role="tablist" aria-label="Visualização">
         <button
           aria-selected={activeView === "calculation"}
           className="view-tab"
@@ -72,7 +72,7 @@ export function ServerCard({
           role="tab"
           type="button"
         >
-          Calculo
+          Cálculo
         </button>
         <button
           aria-selected={activeView === "spreadsheet"}
@@ -89,7 +89,7 @@ export function ServerCard({
         {activeView === "calculation" ? (
           <>
             <p className="server-card__note">
-              O calculo considera {PROMOTION_RETROACTIVE_WINDOW_MONTHS} meses retroativos e{" "}
+              O cálculo considera {PROMOTION_RETROACTIVE_WINDOW_MONTHS} meses retroativos e{" "}
               {PROMOTION_ADDITIONAL_WINDOW_MONTHS} meses adicionais.
             </p>
             <PaystubGainsTable calculationRows={visibleCalculationRows} server={server} />
@@ -104,7 +104,7 @@ export function ServerCard({
         className="server-card__print-view server-card__print-view--calculation"
       >
         <p className="server-card__print-note">
-          Modo calculo: {PROMOTION_RETROACTIVE_WINDOW_MONTHS} meses retroativos e{" "}
+          Modo cálculo: {PROMOTION_RETROACTIVE_WINDOW_MONTHS} meses retroativos e{" "}
           {PROMOTION_ADDITIONAL_WINDOW_MONTHS} meses adicionais.
         </p>
         <PaystubGainsTable calculationRows={visibleCalculationRows} server={server} />

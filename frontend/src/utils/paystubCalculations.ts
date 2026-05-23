@@ -151,7 +151,7 @@ function getCalculationSource(calculation: PromotionCalculationRow): string {
       ? `regra ${calculation.rule.classRef} desde ${calculation.rule.startsAt} (${calculation.rule.source})`
       : null,
     calculation.dueRecord
-      ? `${calculation.dueRecord.sourceCatalogId}: ${calculation.dueRecord.fonte_normativa}, pag. ${calculation.dueRecord.pagina}`
+      ? `${calculation.dueRecord.sourceCatalogId}: ${calculation.dueRecord.fonte_normativa}, pág. ${calculation.dueRecord.pagina}`
       : null,
   ].filter(Boolean);
 
@@ -163,7 +163,7 @@ function formatAnnualAdjustmentSource(label: string, period: string): string {
 }
 
 function formatProjectedPaystubSource(projectedPeriod: string, basePeriod: string): string {
-  return `competencia ${projectedPeriod} projetada a partir do ultimo contracheque carregado (${basePeriod})`;
+  return `competência ${projectedPeriod} projetada a partir do último contracheque carregado (${basePeriod})`;
 }
 
 function roundCurrency(value: number): number {
@@ -271,14 +271,14 @@ function buildAnnualAdjustmentRows(rows: PaystubCalculationRow[]): PaystubCalcul
           key: `annual-${year}-13o`,
           sortKey: year * 100 + 13,
           displayPeriod: buildSyntheticPeriodDisplay(13, year),
-          label: "13o salario",
+          label: "13º salário",
           factor: 1,
         }),
         cloneCalculationWithAdjustment(baseRow, {
           key: `annual-${year}-ferias`,
           sortKey: year * 100 + 14,
           displayPeriod: buildSyntheticPeriodDisplay(14, year),
-          label: "Ferias 1/3",
+          label: "Férias 1/3",
           factor: 1 / 3,
         }),
       );
