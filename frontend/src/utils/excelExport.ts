@@ -85,9 +85,11 @@ function normalizeFileName(value: string): string {
 }
 
 function buildSummaryRows({
+  actionDate,
   issuedAt,
   server,
 }: {
+  actionDate?: string;
   issuedAt: string;
   server: PublicServer;
 }): ExcelCell[][] {
@@ -98,6 +100,7 @@ function buildSummaryRows({
     ["Matricula", server.personal_info.employee_number ?? "-"],
     ["Registro", server.personal_info.registration_id ?? "-"],
     ["Data da posse", server.appointment_date ?? "-"],
+    ["Data de propositura da acao", actionDate ?? "-"],
     ["Data de emissao", issuedAt],
     [],
   ];
@@ -217,15 +220,17 @@ function buildWorksheetXml({
 }
 
 function buildWorkbookXml({
+  actionDate,
   calculationRows,
   issuedAt,
   server,
 }: {
+  actionDate?: string;
   calculationRows: PaystubCalculationRow[];
   issuedAt: string;
   server: PublicServer;
 }): string {
-  const summaryRows = buildSummaryRows({ issuedAt, server });
+  const summaryRows = buildSummaryRows({ actionDate, issuedAt, server });
 
   return `<?xml version="1.0"?>
 <?mso-application progid="Excel.Sheet"?>
@@ -258,15 +263,17 @@ function buildWorkbookXml({
 }
 
 export function downloadCalculationExcel({
+  actionDate,
   calculationRows,
   issuedAt,
   server,
 }: {
+  actionDate?: string;
   calculationRows: PaystubCalculationRow[];
   issuedAt: string;
   server: PublicServer;
 }) {
-  const workbookXml = buildWorkbookXml({ calculationRows, issuedAt, server });
+  const workbookXml = buildWorkbookXml({ actionDate, calculationRows, issuedAt, server });
   const blob = new Blob([workbookXml], {
     type: "application/vnd.ms-excel;charset=utf-8",
   });

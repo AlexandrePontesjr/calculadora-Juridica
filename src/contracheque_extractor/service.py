@@ -46,5 +46,8 @@ class ExtractionService:
     def update_server_appointment_date(self, server_id: str, appointment_date: str | None):
         return self._repository.update_server_appointment_date(server_id, appointment_date)
 
+    def update_server_action_filing_date(self, server_id: str, action_filing_date: str | None):
+        return self._repository.update_server_action_filing_date(server_id, action_filing_date)
+
     def delete_server(self, server_id: str) -> bool:
         return self._repository.delete_server(server_id)

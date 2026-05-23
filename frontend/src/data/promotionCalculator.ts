@@ -26,7 +26,8 @@ export type PromotionCalculationStatus =
   | "sem_base_devida"
   | "competencia_invalida"
   | "data_posse_invalida"
-  | "fora_janela_60_meses";
+  | "fora_janela_60_meses"
+  | "fora_janela_12_meses_futuros";
 
 export type PromotionClassRefRule = {
   startsAt: string;
@@ -50,6 +51,7 @@ export type PromotionCalculationInput = {
   groupPrefix?: string | null;
   groupLabel?: string | null;
   appointmentDate?: string | null;
+  actionDate?: Date;
   paystub: PromotionPaystubInput;
   rules?: PromotionClassRefRule[];
 };
@@ -99,6 +101,7 @@ export const defaultPromotionClassRefRules = [
 
 export const lifeRiskBonusRate = 0.2;
 export const PROMOTION_RETROACTIVE_WINDOW_MONTHS = 60;
+export const PROMOTION_ADDITIONAL_WINDOW_MONTHS = 12;
 
 const cartilhaPromotionSource =
   "09 - CARTILHA PROMOCAO.md: Regra temporal de enquadramento por referencia";
@@ -177,6 +180,45 @@ export function isWithinRetroactiveWindow(
   const monthDelta = getMonthIndex(currentDate) - getMonthIndex(reference);
 
   return monthDelta >= 0 && monthDelta < PROMOTION_RETROACTIVE_WINDOW_MONTHS;
+}
+
+export function isWithinAdditionalWindow(
+  referenceDate: string,
+  currentDate: Date = new Date(),
+): boolean {
+  if (!isValidIsoDate(referenceDate)) {
+    return false;
+  }
+
+  const reference = new Date(`${referenceDate}T00:00:00`);
+  const monthDelta = getMonthIndex(currentDate) - getMonthIndex(reference);
+
+  return monthDelta < 0 && Math.abs(monthDelta) <= PROMOTION_ADDITIONAL_WINDOW_MONTHS;
+}
+
+export function isWithinPromotionCalculationWindow(
+  referenceDate: string,
+  currentDate: Date = new Date(),
+): boolean {
+  return (
+    isWithinRetroactiveWindow(referenceDate, currentDate) ||
+    isWithinAdditionalWindow(referenceDate, currentDate)
+  );
+}
+
+function getOutOfCalculationWindowStatus(
+  referenceDate: string,
+  currentDate: Date,
+): Extract<
+  PromotionCalculationStatus,
+  "fora_janela_60_meses" | "fora_janela_12_meses_futuros"
+> {
+  const reference = new Date(`${referenceDate}T00:00:00`);
+  const monthDelta = getMonthIndex(currentDate) - getMonthIndex(reference);
+
+  return monthDelta < 0
+    ? "fora_janela_12_meses_futuros"
+    : "fora_janela_60_meses";
 }
 
 function normalizeText(value: string | null | undefined): string {
@@ -467,6 +509,7 @@ export function calculatePromotionRow({
   groupPrefix,
   groupLabel,
   appointmentDate,
+  actionDate = new Date(),
   paystub,
   rules = defaultPromotionClassRefRules,
 }: PromotionCalculationInput): PromotionCalculationRow {
@@ -497,7 +540,7 @@ export function calculatePromotionRow({
     };
   }
 
-  if (!isWithinRetroactiveWindow(referenceDate)) {
+  if (!isWithinPromotionCalculationWindow(referenceDate, actionDate)) {
     return {
       referenceDate,
       received,
@@ -505,7 +548,7 @@ export function calculatePromotionRow({
       difference: null,
       retroactive: null,
       courseBonus: 0,
-      status: "fora_janela_60_meses",
+      status: getOutOfCalculationWindowStatus(referenceDate, actionDate),
     };
   }
 

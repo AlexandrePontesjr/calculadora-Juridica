@@ -1,8 +1,9 @@
 import {
   calculatePromotionRow,
   getReferenceDateFromPayrollPeriod,
+  PROMOTION_ADDITIONAL_WINDOW_MONTHS,
   getRemunerationGroupOptions,
-  isWithinRetroactiveWindow,
+  isWithinPromotionCalculationWindow,
   type PromotionCalculationRow,
   type RemunerationGroupOption,
 } from "../data";
@@ -59,6 +60,38 @@ export function getPaystubDisplayPeriod(period: string): string {
   }
 
   return `${String(month).padStart(2, "0")}/${String(year).slice(-2)}`;
+}
+
+function buildPaystubPeriod(month: number, year: number): string {
+  return `${String(month).padStart(2, "0")}/${year}`;
+}
+
+function getPaystubMonthIndex(period: string): number | null {
+  const [monthText, yearText] = period.split("/");
+  const month = Number(monthText);
+  const year = Number(yearText);
+
+  if (
+    !Number.isInteger(month) ||
+    !Number.isInteger(year) ||
+    month < 1 ||
+    month > 12
+  ) {
+    return null;
+  }
+
+  return year * 12 + (month - 1);
+}
+
+function getPeriodFromMonthIndex(monthIndex: number): string {
+  const year = Math.floor(monthIndex / 12);
+  const month = (monthIndex % 12) + 1;
+
+  return buildPaystubPeriod(month, year);
+}
+
+function getActionMonthIndex(actionDate: Date): number {
+  return actionDate.getFullYear() * 12 + actionDate.getMonth();
 }
 
 function buildSyntheticPeriodDisplay(month: number, year: number): string {
@@ -127,6 +160,10 @@ function getCalculationSource(calculation: PromotionCalculationRow): string {
 
 function formatAnnualAdjustmentSource(label: string, period: string): string {
   return `${label} calculado a partir de ${period}`;
+}
+
+function formatProjectedPaystubSource(projectedPeriod: string, basePeriod: string): string {
+  return `competencia ${projectedPeriod} projetada a partir do ultimo contracheque carregado (${basePeriod})`;
 }
 
 function roundCurrency(value: number): number {
@@ -250,6 +287,90 @@ function buildAnnualAdjustmentRows(rows: PaystubCalculationRow[]): PaystubCalcul
   return annualRows;
 }
 
+function clonePaystubForProjectedPeriod(paystub: Paystub, period: string): Paystub {
+  return {
+    ...paystub,
+    period,
+    entries: paystub.entries.map((entry) => ({ ...entry })),
+    totals: { ...paystub.totals },
+    audit: { ...paystub.audit },
+    alerts: paystub.alerts.map((alert) => ({ ...alert })),
+    warnings: [...paystub.warnings],
+  };
+}
+
+function getLatestPaystubWithValidPeriod(paystubs: Paystub[]): Paystub | undefined {
+  return [...paystubs]
+    .filter((paystub) => getPaystubMonthIndex(paystub.period) !== null)
+    .sort((left, right) => {
+      const leftIndex = getPaystubMonthIndex(left.period) ?? Number.NEGATIVE_INFINITY;
+      const rightIndex = getPaystubMonthIndex(right.period) ?? Number.NEGATIVE_INFINITY;
+
+      return rightIndex - leftIndex;
+    })[0];
+}
+
+function buildProjectedFutureRows({
+  actionDate,
+  appointmentDate,
+  existingPeriods,
+  groupLabel,
+  groupPrefix,
+  latestPaystub,
+  server,
+}: {
+  actionDate: Date;
+  appointmentDate?: string | null;
+  existingPeriods: Set<string>;
+  groupLabel?: string | null;
+  groupPrefix?: string | null;
+  latestPaystub: Paystub | undefined;
+  server: PublicServer;
+}): PaystubCalculationRow[] {
+  if (!latestPaystub) {
+    return [];
+  }
+
+  const rows: PaystubCalculationRow[] = [];
+  const actionMonthIndex = getActionMonthIndex(actionDate);
+
+  for (let offset = 1; offset <= PROMOTION_ADDITIONAL_WINDOW_MONTHS; offset += 1) {
+    const period = getPeriodFromMonthIndex(actionMonthIndex + offset);
+
+    if (existingPeriods.has(period)) {
+      continue;
+    }
+
+    const paystub = clonePaystubForProjectedPeriod(latestPaystub, period);
+    const calculation = calculatePromotionRow({
+      role: server.personal_info.role,
+      groupPrefix,
+      groupLabel,
+      appointmentDate,
+      actionDate,
+      paystub: {
+        period: paystub.period,
+        classRef: paystub.class_ref,
+        entries: paystub.entries,
+      },
+    });
+
+    rows.push({
+      key: `projected-${period}`,
+      sortKey: getPaystubPeriodKey(period),
+      paystub,
+      displayPeriod: getPaystubDisplayPeriod(period),
+      calculation,
+      source: [
+        getCalculationSource(calculation),
+        formatProjectedPaystubSource(period, latestPaystub.period),
+      ].join(" | "),
+    });
+  }
+
+  return rows;
+}
+
 export function findRemunerationGroupOption(
   value: string | null | undefined,
 ): RemunerationGroupOption | undefined {
@@ -265,11 +386,15 @@ export function buildPaystubCalculationRows(
   groupPrefix?: string | null,
   groupLabel?: string | null,
   appointmentDate?: string | null,
+  actionDate: Date = new Date(),
 ): PaystubCalculationRow[] {
-  const baseRows = sortPaystubsByPeriod(server.paystubs)
+  const sortedPaystubs = sortPaystubsByPeriod(server.paystubs);
+  const existingPeriods = new Set(sortedPaystubs.map((paystub) => paystub.period));
+  const latestPaystub = getLatestPaystubWithValidPeriod(sortedPaystubs);
+  const baseRows = sortedPaystubs
     .filter((paystub) => {
       const referenceDate = getReferenceDateFromPayrollPeriod(paystub.period);
-      return referenceDate === null || isWithinRetroactiveWindow(referenceDate);
+      return referenceDate === null || isWithinPromotionCalculationWindow(referenceDate, actionDate);
     })
     .map((paystub) => {
       const calculation = calculatePromotionRow({
@@ -277,6 +402,7 @@ export function buildPaystubCalculationRows(
         groupPrefix,
         groupLabel,
         appointmentDate,
+        actionDate,
         paystub: {
           period: paystub.period,
           classRef: paystub.class_ref,
@@ -293,8 +419,19 @@ export function buildPaystubCalculationRows(
         source: getCalculationSource(calculation),
       };
     });
+  const projectedFutureRows = buildProjectedFutureRows({
+    actionDate,
+    appointmentDate,
+    existingPeriods,
+    groupLabel,
+    groupPrefix,
+    latestPaystub,
+    server,
+  });
 
-  return [...baseRows, ...buildAnnualAdjustmentRows(baseRows)].sort(
+  const monthlyRows = [...baseRows, ...projectedFutureRows];
+
+  return [...monthlyRows, ...buildAnnualAdjustmentRows(monthlyRows)].sort(
     (left, right) => left.sortKey - right.sortKey,
   );
 }

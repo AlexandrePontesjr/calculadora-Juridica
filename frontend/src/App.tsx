@@ -43,6 +43,19 @@ import { navigateToHome, navigateToServerDetail, parseRoute } from "./utils/rout
 
 type DetailPrintMode = "calculation" | "spreadsheet";
 
+function getLocalIsoDate(date: Date): string {
+  return [
+    date.getFullYear(),
+    String(date.getMonth() + 1).padStart(2, "0"),
+    String(date.getDate()).padStart(2, "0"),
+  ].join("-");
+}
+
+function getDateFromLocalIsoDate(value: string): Date {
+  const [yearText, monthText, dayText] = value.split("-");
+  return new Date(Number(yearText), Number(monthText) - 1, Number(dayText));
+}
+
 function AppShell({
   children,
   currentSection,
@@ -403,7 +416,10 @@ function ServerDetailPage({ serverId }: { serverId: string }) {
   const [selectedRemunerationGroupPrefix, setSelectedRemunerationGroupPrefix] = useState("");
   const [appointmentDate, setAppointmentDate] = useState("");
   const [appointmentDateStatus, setAppointmentDateStatus] = useState("");
+  const [actionDateInput, setActionDateInput] = useState(() => getLocalIsoDate(new Date()));
+  const [actionDateStatus, setActionDateStatus] = useState("");
   const [isSavingAppointmentDate, setIsSavingAppointmentDate] = useState(false);
+  const [isSavingActionDate, setIsSavingActionDate] = useState(false);
   const [isInfoPanelCollapsed, setIsInfoPanelCollapsed] = useState(false);
   const [printMode, setPrintMode] = useState<DetailPrintMode>("calculation");
 
@@ -433,6 +449,8 @@ function ServerDetailPage({ serverId }: { serverId: string }) {
           );
           setAppointmentDate(payload.server.appointment_date ?? "");
           setAppointmentDateStatus("");
+          setActionDateInput(payload.server.action_filing_date ?? getLocalIsoDate(new Date()));
+          setActionDateStatus("");
         }
       } catch (requestError) {
         if (!cancelled) {
@@ -445,6 +463,8 @@ function ServerDetailPage({ serverId }: { serverId: string }) {
           setSelectedRemunerationGroupPrefix("");
           setAppointmentDate("");
           setAppointmentDateStatus("");
+          setActionDateInput(getLocalIsoDate(new Date()));
+          setActionDateStatus("");
         }
       } finally {
         if (!cancelled) {
@@ -464,13 +484,21 @@ function ServerDetailPage({ serverId }: { serverId: string }) {
     selectedRemunerationGroupPrefix === "" ? null : selectedRemunerationGroupPrefix;
   const selectedRemunerationGroupOption = findRemunerationGroupOption(selectedRemunerationGroup);
   const persistedAppointmentDate = record?.server.appointment_date ?? "";
+  const persistedActionDate = record?.server.action_filing_date ?? "";
   const calculationAppointmentDate = isCompleteIsoDate(appointmentDate) ? appointmentDate : "";
+  const actionDate = isCompleteIsoDate(actionDateInput)
+    ? getDateFromLocalIsoDate(actionDateInput)
+    : new Date();
+  const actionDateIso = isCompleteIsoDate(actionDateInput)
+    ? actionDateInput
+    : getLocalIsoDate(actionDate);
   const calculationRows = record
     ? buildPaystubCalculationRows(
         record.server,
         selectedRemunerationGroup,
         selectedRemunerationGroupOption?.label,
         calculationAppointmentDate,
+        actionDate,
       )
     : [];
   const calculationSummary = getCalculationSummary(calculationRows);
@@ -495,6 +523,7 @@ function ServerDetailPage({ serverId }: { serverId: string }) {
     }
 
     downloadCalculationExcel({
+      actionDate: actionDateIso,
       calculationRows,
       issuedAt: currentIssueDate,
       server: record.server,
@@ -559,6 +588,68 @@ function ServerDetailPage({ serverId }: { serverId: string }) {
 
   const handleAppointmentDateBlur = () => {
     void saveAppointmentDate(appointmentDate);
+  };
+
+  const saveActionDate = async (nextActionDate: string) => {
+    const normalizedActionDate = nextActionDate || "";
+    if (
+      normalizedActionDate === persistedActionDate ||
+      (normalizedActionDate && !isCompleteIsoDate(normalizedActionDate))
+    ) {
+      return;
+    }
+
+    setIsSavingActionDate(true);
+
+    try {
+      const response = await fetch(
+        `/api/servers/${encodeURIComponent(serverId)}/action-filing-date`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            action_filing_date: normalizedActionDate || null,
+          }),
+        },
+      );
+      const payload = (await response.json()) as StoredServerRecord & { detail?: string };
+
+      if (!response.ok) {
+        const detail =
+          typeof payload.detail === "string"
+            ? payload.detail
+            : "Falha ao salvar data de propositura da acao.";
+        throw new Error(detail);
+      }
+
+      setRecord(payload);
+      setActionDateInput(payload.server.action_filing_date ?? getLocalIsoDate(new Date()));
+      setActionDateStatus("Data de propositura salva.");
+    } catch (requestError) {
+      const message =
+        requestError instanceof Error
+          ? requestError.message
+          : "Nao foi possivel salvar a data de propositura da acao.";
+      setActionDateStatus(message);
+    } finally {
+      setIsSavingActionDate(false);
+    }
+  };
+
+  const handleActionDateChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const nextActionDate = event.target.value;
+    setActionDateInput(nextActionDate);
+    setActionDateStatus("");
+
+    if (!nextActionDate || isCompleteIsoDate(nextActionDate)) {
+      void saveActionDate(nextActionDate);
+    }
+  };
+
+  const handleActionDateBlur = () => {
+    void saveActionDate(actionDateInput);
   };
 
   return (
@@ -710,6 +801,27 @@ function ServerDetailPage({ serverId }: { serverId: string }) {
                   {appointmentDateStatus}
                 </small>
               ) : null}
+              <label className="field">
+                <span>Data de propositura da acao</span>
+                <input
+                  aria-busy={isSavingActionDate}
+                  onBlur={handleActionDateBlur}
+                  onChange={handleActionDateChange}
+                  type="date"
+                  value={actionDateInput}
+                />
+              </label>
+              {actionDateStatus ? (
+                <small
+                  className={
+                    actionDateStatus === "Data de propositura salva."
+                      ? "status success"
+                      : "status error"
+                  }
+                >
+                  {actionDateStatus}
+                </small>
+              ) : null}
             </section>
 
             {(unresolvedDueRows > 0 || lowConfidenceRows > 0) && (
@@ -797,6 +909,10 @@ function ServerDetailPage({ serverId }: { serverId: string }) {
                 <div>
                   <dt>Arquivo de origem</dt>
                   <dd>{record.source_filename ?? "-"}</dd>
+                </div>
+                <div>
+                  <dt>Data de propositura da acao</dt>
+                  <dd>{actionDateIso}</dd>
                 </div>
                 <div>
                   <dt>Data de emissao</dt>

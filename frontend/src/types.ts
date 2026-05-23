@@ -55,6 +55,7 @@ export type PublicServer = {
   server_id: string;
   personal_info: PersonalInfo;
   appointment_date?: string | null;
+  action_filing_date?: string | null;
   paystubs: Paystub[];
 };
 

@@ -1,5 +1,8 @@
 import { useMemo, useState } from "react";
-import { PROMOTION_RETROACTIVE_WINDOW_MONTHS } from "../data";
+import {
+  PROMOTION_ADDITIONAL_WINDOW_MONTHS,
+  PROMOTION_RETROACTIVE_WINDOW_MONTHS,
+} from "../data";
 import type { PaystubCalculationRow, PublicServer } from "../types";
 import {
   buildPaystubCalculationRows,
@@ -86,8 +89,8 @@ export function ServerCard({
         {activeView === "calculation" ? (
           <>
             <p className="server-card__note">
-              O calculo considera apenas competencias dos ultimos{" "}
-              {PROMOTION_RETROACTIVE_WINDOW_MONTHS} meses.
+              O calculo considera {PROMOTION_RETROACTIVE_WINDOW_MONTHS} meses retroativos e{" "}
+              {PROMOTION_ADDITIONAL_WINDOW_MONTHS} meses adicionais.
             </p>
             <PaystubGainsTable calculationRows={visibleCalculationRows} server={server} />
           </>
@@ -101,8 +104,8 @@ export function ServerCard({
         className="server-card__print-view server-card__print-view--calculation"
       >
         <p className="server-card__print-note">
-          Modo calculo: competencias calculadas nos ultimos{" "}
-          {PROMOTION_RETROACTIVE_WINDOW_MONTHS} meses.
+          Modo calculo: {PROMOTION_RETROACTIVE_WINDOW_MONTHS} meses retroativos e{" "}
+          {PROMOTION_ADDITIONAL_WINDOW_MONTHS} meses adicionais.
         </p>
         <PaystubGainsTable calculationRows={visibleCalculationRows} server={server} />
       </div>

@@ -169,6 +169,77 @@ def test_update_server_appointment_date_returns_404_for_unknown_id(tmp_path: Pat
     assert response.json()["detail"] == "Servidor nao encontrado."
 
 
+def test_update_server_action_filing_date_persists_latest_snapshot(tmp_path: Path) -> None:
+    client = make_client(tmp_path / "test.db")
+    client.post(
+        "/extract",
+        files={"file": ("lote.pdf", b"%PDF-1.4 fake content", "application/pdf")},
+    )
+
+    update_response = client.patch(
+        "/servers/server-abc/action-filing-date",
+        json={"action_filing_date": "2026-05-23"},
+    )
+
+    assert update_response.status_code == 200
+    assert update_response.json()["server"]["action_filing_date"] == "2026-05-23"
+    assert (
+        client.get("/servers/server-abc").json()["server"]["action_filing_date"]
+        == "2026-05-23"
+    )
+
+
+def test_update_server_action_filing_date_can_clear_value(tmp_path: Path) -> None:
+    client = make_client(tmp_path / "test.db")
+    client.post(
+        "/extract",
+        files={"file": ("lote.pdf", b"%PDF-1.4 fake content", "application/pdf")},
+    )
+    client.patch(
+        "/servers/server-abc/action-filing-date",
+        json={"action_filing_date": "2026-05-23"},
+    )
+
+    response = client.patch(
+        "/servers/server-abc/action-filing-date",
+        json={"action_filing_date": None},
+    )
+
+    assert response.status_code == 200
+    assert response.json()["server"]["action_filing_date"] is None
+
+
+def test_update_server_action_filing_date_validates_iso_date(tmp_path: Path) -> None:
+    client = make_client(tmp_path / "test.db")
+    client.post(
+        "/extract",
+        files={"file": ("lote.pdf", b"%PDF-1.4 fake content", "application/pdf")},
+    )
+
+    response = client.patch(
+        "/servers/server-abc/action-filing-date",
+        json={"action_filing_date": "05/2026"},
+    )
+
+    assert response.status_code == 400
+    assert (
+        response.json()["detail"]
+        == "Data de propositura da acao deve estar no formato AAAA-MM-DD."
+    )
+
+
+def test_update_server_action_filing_date_returns_404_for_unknown_id(tmp_path: Path) -> None:
+    client = make_client(tmp_path / "test.db")
+
+    response = client.patch(
+        "/servers/server-inexistente/action-filing-date",
+        json={"action_filing_date": "2026-05-23"},
+    )
+
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Servidor nao encontrado."
+
+
 def test_delete_server_removes_persisted_snapshots(tmp_path: Path) -> None:
     client = make_client(tmp_path / "test.db")
     client.post(

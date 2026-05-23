@@ -7,11 +7,27 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from contracheque_extractor.models import (
     ExtractionResponse,
+    ServerActionFilingDateUpdate,
     ServerAppointmentDateUpdate,
     StoredServerRecord,
     StoredServerSummary,
 )
 from contracheque_extractor.service import ExtractionService
+
+
+def _validate_iso_date(value: str | None, field_label: str) -> None:
+    if not value:
+        return
+
+    try:
+        if len(value) != 10 or value[4] != "-" or value[7] != "-":
+            raise ValueError
+        date.fromisoformat(value)
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=400,
+            detail=f"{field_label} deve estar no formato AAAA-MM-DD.",
+        ) from exc
 
 
 def create_app(service: ExtractionService | None = None) -> FastAPI:
@@ -67,22 +83,26 @@ def create_app(service: ExtractionService | None = None) -> FastAPI:
         payload: ServerAppointmentDateUpdate,
     ) -> StoredServerRecord:
         appointment_date = payload.appointment_date
-        if appointment_date:
-            try:
-                if (
-                    len(appointment_date) != 10
-                    or appointment_date[4] != "-"
-                    or appointment_date[7] != "-"
-                ):
-                    raise ValueError
-                date.fromisoformat(appointment_date)
-            except ValueError as exc:
-                raise HTTPException(
-                    status_code=400,
-                    detail="Data da posse deve estar no formato AAAA-MM-DD.",
-                ) from exc
+        _validate_iso_date(appointment_date, "Data da posse")
 
         server = app.state.service.update_server_appointment_date(server_id, appointment_date)
+        if server is None:
+            raise HTTPException(status_code=404, detail="Servidor nao encontrado.")
+
+        return server
+
+    @app.patch("/servers/{server_id}/action-filing-date", response_model=StoredServerRecord)
+    def update_server_action_filing_date(
+        server_id: str,
+        payload: ServerActionFilingDateUpdate,
+    ) -> StoredServerRecord:
+        action_filing_date = payload.action_filing_date
+        _validate_iso_date(action_filing_date, "Data de propositura da acao")
+
+        server = app.state.service.update_server_action_filing_date(
+            server_id,
+            action_filing_date,
+        )
         if server is None:
             raise HTTPException(status_code=404, detail="Servidor nao encontrado.")
 

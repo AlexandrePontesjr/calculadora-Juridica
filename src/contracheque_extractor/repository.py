@@ -157,6 +157,26 @@ class SQLiteExtractionRepository:
         server_id: str,
         appointment_date: str | None,
     ) -> StoredServerRecord | None:
+        return self._update_latest_server_snapshot(
+            server_id,
+            {"appointment_date": appointment_date},
+        )
+
+    def update_server_action_filing_date(
+        self,
+        server_id: str,
+        action_filing_date: str | None,
+    ) -> StoredServerRecord | None:
+        return self._update_latest_server_snapshot(
+            server_id,
+            {"action_filing_date": action_filing_date},
+        )
+
+    def _update_latest_server_snapshot(
+        self,
+        server_id: str,
+        updates: dict[str, str | None],
+    ) -> StoredServerRecord | None:
         with self._connect() as connection:
             row = connection.execute(
                 """
@@ -179,7 +199,7 @@ class SQLiteExtractionRepository:
                 return None
 
             server = PublicServer.model_validate_json(row["payload_json"]).model_copy(
-                update={"appointment_date": appointment_date},
+                update=updates,
             )
             connection.execute(
                 """

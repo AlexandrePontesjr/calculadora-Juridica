@@ -10,10 +10,12 @@
 
 `src/contracheque_extractor/api.py:create_app()` tambem expoe `PATCH /servers/{server_id}/appointment-date` para salvar, alterar ou limpar `PublicServer.appointment_date` no snapshot mais recente do servidor.
 
+`src/contracheque_extractor/api.py:create_app()` expoe `PATCH /servers/{server_id}/action-filing-date` para salvar, alterar ou limpar `PublicServer.action_filing_date`, usado pelo frontend como data de propositura da acao no calculo da janela 60 + 12.
+
 ## Gotchas
 
 - A persistência foi mantida sem ORM para reduzir superfície de mudança e evitar schema prematuro das rubricas.
 - A leitura de servidor retorna sempre o snapshot mais recente por `server_id`.
-- A data da posse e metadado editavel do servidor, nao vem do parser de PDF; o frontend carrega `server.appointment_date` e persiste mudancas pelo endpoint dedicado.
+- A data da posse e a data de propositura da acao sao metadados editaveis do servidor, nao vem do parser de PDF; o frontend carrega `server.appointment_date` e `server.action_filing_date` e persiste mudancas pelos endpoints dedicados.
 - Os endpoints de integração reaproveitam o mesmo contrato de leitura de servidor para evitar divergência entre consumo interno e externo.
 - O caminho padrão do banco é ancorado na raiz do repositório; não depende do `cwd` do processo, o que evita divergência ao subir a API via `F5`.

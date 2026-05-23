@@ -69,6 +69,7 @@ class PublicServer(BaseModel):
     server_id: str
     personal_info: PersonalInfo
     appointment_date: str | None = None
+    action_filing_date: str | None = None
     paystubs: list[Paystub] = Field(default_factory=list)
 
 
@@ -103,3 +104,7 @@ class StoredServerRecord(BaseModel):
 
 class ServerAppointmentDateUpdate(BaseModel):
     appointment_date: str | None = None
+
+
+class ServerActionFilingDateUpdate(BaseModel):
+    action_filing_date: str | None = None
