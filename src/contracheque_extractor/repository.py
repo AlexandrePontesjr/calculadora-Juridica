@@ -162,6 +162,20 @@ class SQLiteExtractionRepository:
             {"appointment_date": appointment_date},
         )
 
+    def update_server_retirement_settings(
+        self,
+        server_id: str,
+        employment_status: str,
+        retirement_date: str | None,
+    ) -> StoredServerRecord | None:
+        return self._update_latest_server_snapshot(
+            server_id,
+            {
+                "employment_status": employment_status,
+                "retirement_date": retirement_date,
+            },
+        )
+
     def update_server_action_filing_date(
         self,
         server_id: str,

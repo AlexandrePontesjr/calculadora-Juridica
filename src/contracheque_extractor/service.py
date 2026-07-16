@@ -46,6 +46,18 @@ class ExtractionService:
     def update_server_appointment_date(self, server_id: str, appointment_date: str | None):
         return self._repository.update_server_appointment_date(server_id, appointment_date)
 
+    def update_server_retirement_settings(
+        self,
+        server_id: str,
+        employment_status: str,
+        retirement_date: str | None,
+    ):
+        return self._repository.update_server_retirement_settings(
+            server_id,
+            employment_status,
+            retirement_date,
+        )
+
     def update_server_action_filing_date(self, server_id: str, action_filing_date: str | None):
         return self._repository.update_server_action_filing_date(server_id, action_filing_date)
 

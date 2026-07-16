@@ -9,6 +9,7 @@ from contracheque_extractor.models import (
     ExtractionResponse,
     ServerActionFilingDateUpdate,
     ServerAppointmentDateUpdate,
+    ServerRetirementSettingsUpdate,
     StoredServerRecord,
     StoredServerSummary,
 )
@@ -87,6 +88,49 @@ def create_app(service: ExtractionService | None = None) -> FastAPI:
 
         server = app.state.service.update_server_appointment_date(server_id, appointment_date)
         if server is None:
+            raise HTTPException(status_code=404, detail="Servidor nao encontrado.")
+
+        return server
+
+    @app.patch("/servers/{server_id}/retirement-settings", response_model=StoredServerRecord)
+    def update_server_retirement_settings(
+        server_id: str,
+        payload: ServerRetirementSettingsUpdate,
+    ) -> StoredServerRecord:
+        if payload.employment_status not in {"active", "retired"}:
+            raise HTTPException(
+                status_code=400,
+                detail="Situacao funcional deve ser active ou retired.",
+            )
+
+        retirement_date = payload.retirement_date
+        if payload.employment_status == "retired":
+            if not retirement_date:
+                raise HTTPException(
+                    status_code=400,
+                    detail="Data de aposentadoria e obrigatoria para servidor aposentado.",
+                )
+            _validate_iso_date(retirement_date, "Data de aposentadoria")
+        else:
+            retirement_date = None
+
+        existing_server = app.state.service.get_server(server_id)
+        if existing_server is None:
+            raise HTTPException(status_code=404, detail="Servidor nao encontrado.")
+
+        appointment_date = existing_server.server.appointment_date
+        if appointment_date and retirement_date and retirement_date < appointment_date:
+            raise HTTPException(
+                status_code=400,
+                detail="Data de aposentadoria nao pode ser anterior a data da posse.",
+            )
+
+        server = app.state.service.update_server_retirement_settings(
+            server_id,
+            payload.employment_status,
+            retirement_date,
+        )
+        if server is None:  # pragma: no cover - protected by lookup above
             raise HTTPException(status_code=404, detail="Servidor nao encontrado.")
 
         return server

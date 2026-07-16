@@ -169,6 +169,69 @@ def test_update_server_appointment_date_returns_404_for_unknown_id(tmp_path: Pat
     assert response.json()["detail"] == "Servidor nao encontrado."
 
 
+def test_update_server_retirement_settings_persists_and_clears_date(tmp_path: Path) -> None:
+    client = make_client(tmp_path / "test.db")
+    client.post(
+        "/extract",
+        files={"file": ("lote.pdf", b"%PDF-1.4 fake content", "application/pdf")},
+    )
+    client.patch(
+        "/servers/server-abc/appointment-date",
+        json={"appointment_date": "2020-03-15"},
+    )
+
+    retired_response = client.patch(
+        "/servers/server-abc/retirement-settings",
+        json={"employment_status": "retired", "retirement_date": "2024-01-01"},
+    )
+
+    assert retired_response.status_code == 200
+    assert retired_response.json()["server"]["employment_status"] == "retired"
+    assert retired_response.json()["server"]["retirement_date"] == "2024-01-01"
+
+    active_response = client.patch(
+        "/servers/server-abc/retirement-settings",
+        json={"employment_status": "active", "retirement_date": "2024-01-01"},
+    )
+
+    assert active_response.status_code == 200
+    assert active_response.json()["server"]["employment_status"] == "active"
+    assert active_response.json()["server"]["retirement_date"] is None
+
+
+def test_update_server_retirement_settings_validates_required_and_chronological_dates(
+    tmp_path: Path,
+) -> None:
+    client = make_client(tmp_path / "test.db")
+    client.post(
+        "/extract",
+        files={"file": ("lote.pdf", b"%PDF-1.4 fake content", "application/pdf")},
+    )
+    client.patch(
+        "/servers/server-abc/appointment-date",
+        json={"appointment_date": "2020-03-15"},
+    )
+
+    missing_date_response = client.patch(
+        "/servers/server-abc/retirement-settings",
+        json={"employment_status": "retired", "retirement_date": None},
+    )
+    earlier_date_response = client.patch(
+        "/servers/server-abc/retirement-settings",
+        json={"employment_status": "retired", "retirement_date": "2020-03-14"},
+    )
+
+    assert missing_date_response.status_code == 400
+    assert (
+        missing_date_response.json()["detail"]
+        == "Data de aposentadoria e obrigatoria para servidor aposentado."
+    )
+    assert earlier_date_response.status_code == 400
+    assert (
+        earlier_date_response.json()["detail"]
+        == "Data de aposentadoria nao pode ser anterior a data da posse."
+    )
+
 def test_update_server_action_filing_date_persists_latest_snapshot(tmp_path: Path) -> None:
     client = make_client(tmp_path / "test.db")
     client.post(
