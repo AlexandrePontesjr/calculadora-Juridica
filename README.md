@@ -54,6 +54,27 @@ pip install -e .[dev]
 uvicorn contracheque_extractor.api:app --reload
 ```
 
+## Acesso rápido (desenvolvimento)
+
+No Windows, abra dois terminais PowerShell na raiz do repositório.
+
+**Backend — FastAPI**
+
+```powershell
+.\.venv\Scripts\python.exe -m uvicorn contracheque_extractor.api:app --app-dir src --reload --host 127.0.0.1 --port 8000
+```
+
+API disponível em `http://127.0.0.1:8000` e verificação em `http://127.0.0.1:8000/health`.
+
+**Frontend — Vite**
+
+```powershell
+npm --prefix frontend run dev -- --host 127.0.0.1 --port 5173
+```
+
+Abra `http://127.0.0.1:5173`. O frontend encaminha chamadas `/api` para o backend local.
+
+Para interromper cada serviço, use `Ctrl+C` no respectivo terminal.
 ## Frontend React
 
 Em outro terminal:
@@ -84,6 +105,7 @@ O SQLite continua sendo usado apenas para snapshots de contracheques extraidos.
 - `POST /extract`
 - `GET /servers`
 - `GET /servers/{server_id}`
+- `PATCH /servers/{server_id}/retirement-settings`
 - `DELETE /servers/{server_id}`
 - `GET /integrations/servers/{server_id}`
 

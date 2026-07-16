@@ -79,7 +79,7 @@ Copy-Item -LiteralPath (Join-Path $PackagingDir "Iniciar Calculadora Juridica.ba
 Copy-Item -LiteralPath (Join-Path $PackagingDir "Iniciar Calculadora Juridica.ps1") -Destination $PackageDir
 
 Write-Host "Criando ambiente Python local..."
-Invoke-Checked "Criando .venv do pacote..." { python -m venv (Join-Path $PackageDir ".venv") }
+Invoke-Checked "Criando .venv do pacote com Python 3.14..." { py -3.14 -m venv (Join-Path $PackageDir ".venv") }
 $PackagePython = Join-Path $PackageDir ".venv\Scripts\python.exe"
 Invoke-Checked "Atualizando pip do pacote..." { & $PackagePython -m pip install --upgrade pip }
 Invoke-Checked "Instalando backend no pacote..." { & $PackagePython -m pip install $PackageDir }
