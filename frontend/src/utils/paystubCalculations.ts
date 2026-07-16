@@ -402,6 +402,7 @@ export function buildPaystubCalculationRows(
         groupPrefix,
         groupLabel,
         appointmentDate,
+        retirementDate: server.employment_status === "retired" ? server.retirement_date : null,
         actionDate,
         paystub: {
           period: paystub.period,
@@ -419,17 +420,7 @@ export function buildPaystubCalculationRows(
         source: getCalculationSource(calculation),
       };
     });
-  const projectedFutureRows = buildProjectedFutureRows({
-    actionDate,
-    appointmentDate,
-    existingPeriods,
-    groupLabel,
-    groupPrefix,
-    latestPaystub,
-    server,
-  });
-
-  const monthlyRows = [...baseRows, ...projectedFutureRows];
+  const monthlyRows = baseRows;
 
   return [...monthlyRows, ...buildAnnualAdjustmentRows(monthlyRows)].sort(
     (left, right) => left.sortKey - right.sortKey,

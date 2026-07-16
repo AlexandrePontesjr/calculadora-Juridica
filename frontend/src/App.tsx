@@ -416,6 +416,10 @@ function ServerDetailPage({ serverId }: { serverId: string }) {
   const [selectedRemunerationGroupPrefix, setSelectedRemunerationGroupPrefix] = useState("");
   const [appointmentDate, setAppointmentDate] = useState("");
   const [appointmentDateStatus, setAppointmentDateStatus] = useState("");
+  const [employmentStatus, setEmploymentStatus] = useState<"active" | "retired">("active");
+  const [retirementDate, setRetirementDate] = useState("");
+  const [retirementStatus, setRetirementStatus] = useState("");
+  const [isSavingRetirementSettings, setIsSavingRetirementSettings] = useState(false);
   const [actionDateInput, setActionDateInput] = useState(() => getLocalIsoDate(new Date()));
   const [actionDateStatus, setActionDateStatus] = useState("");
   const [isSavingAppointmentDate, setIsSavingAppointmentDate] = useState(false);
@@ -449,6 +453,9 @@ function ServerDetailPage({ serverId }: { serverId: string }) {
           );
           setAppointmentDate(payload.server.appointment_date ?? "");
           setAppointmentDateStatus("");
+          setEmploymentStatus(payload.server.employment_status ?? "active");
+          setRetirementDate(payload.server.retirement_date ?? "");
+          setRetirementStatus("");
           setActionDateInput(payload.server.action_filing_date ?? getLocalIsoDate(new Date()));
           setActionDateStatus("");
         }
@@ -463,6 +470,9 @@ function ServerDetailPage({ serverId }: { serverId: string }) {
           setSelectedRemunerationGroupPrefix("");
           setAppointmentDate("");
           setAppointmentDateStatus("");
+          setEmploymentStatus("active");
+          setRetirementDate("");
+          setRetirementStatus("");
           setActionDateInput(getLocalIsoDate(new Date()));
           setActionDateStatus("");
         }
@@ -485,6 +495,8 @@ function ServerDetailPage({ serverId }: { serverId: string }) {
   const selectedRemunerationGroupOption = findRemunerationGroupOption(selectedRemunerationGroup);
   const persistedAppointmentDate = record?.server.appointment_date ?? "";
   const persistedActionDate = record?.server.action_filing_date ?? "";
+  const persistedEmploymentStatus = record?.server.employment_status ?? "active";
+  const persistedRetirementDate = record?.server.retirement_date ?? "";
   const calculationAppointmentDate = isCompleteIsoDate(appointmentDate) ? appointmentDate : "";
   const actionDate = isCompleteIsoDate(actionDateInput)
     ? getDateFromLocalIsoDate(actionDateInput)
@@ -590,6 +602,17 @@ function ServerDetailPage({ serverId }: { serverId: string }) {
     void saveAppointmentDate(appointmentDate);
   };
 
+  const saveRetirementSettings = async (nextStatus: "active" | "retired", nextDate: string) => {
+    if ((nextStatus === persistedEmploymentStatus && nextDate === persistedRetirementDate) || (nextStatus === "retired" && !isCompleteIsoDate(nextDate))) return;
+    setIsSavingRetirementSettings(true);
+    try {
+      const response = await fetch(`/api/servers/${encodeURIComponent(serverId)}/retirement-settings`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ employment_status: nextStatus, retirement_date: nextStatus === "retired" ? nextDate : null }) });
+      const payload = (await response.json()) as StoredServerRecord & { detail?: string };
+      if (!response.ok) throw new Error(typeof payload.detail === "string" ? payload.detail : "Falha ao salvar aposentadoria.");
+      setRecord(payload); setEmploymentStatus(payload.server.employment_status ?? "active"); setRetirementDate(payload.server.retirement_date ?? ""); setRetirementStatus("Parâmetros de aposentadoria salvos.");
+    } catch (requestError) { setRetirementStatus(requestError instanceof Error ? requestError.message : "Não foi possível salvar aposentadoria."); }
+    finally { setIsSavingRetirementSettings(false); }
+  };
   const saveActionDate = async (nextActionDate: string) => {
     const normalizedActionDate = nextActionDate || "";
     if (
@@ -802,6 +825,13 @@ function ServerDetailPage({ serverId }: { serverId: string }) {
                 </small>
               ) : null}
               <label className="field">
+                <span>Situação funcional</span>
+                <select aria-busy={isSavingRetirementSettings} onChange={(event) => { const nextStatus = event.target.value as "active" | "retired"; setEmploymentStatus(nextStatus); setRetirementStatus(""); if (nextStatus === "active") void saveRetirementSettings("active", ""); }} value={employmentStatus}>
+                  <option value="active">Servidor ativo</option><option value="retired">Servidor aposentado</option>
+                </select>
+              </label>
+              {employmentStatus === "retired" ? <label className="field"><span>Data de aposentadoria</span><input aria-busy={isSavingRetirementSettings} onBlur={() => void saveRetirementSettings("retired", retirementDate)} onChange={(event) => { setRetirementDate(event.target.value); setRetirementStatus(""); }} required type="date" value={retirementDate} /></label> : null}
+              {retirementStatus ? <small className={retirementStatus.includes("salvos") ? "status success" : "status error"}>{retirementStatus}</small> : null}              <label className="field">
                 <span>Data de propositura da ação</span>
                 <input
                   aria-busy={isSavingActionDate}

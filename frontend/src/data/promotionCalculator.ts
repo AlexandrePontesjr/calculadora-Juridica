@@ -51,6 +51,7 @@ export type PromotionCalculationInput = {
   groupPrefix?: string | null;
   groupLabel?: string | null;
   appointmentDate?: string | null;
+  retirementDate?: string | null;
   actionDate?: Date;
   paystub: PromotionPaystubInput;
   rules?: PromotionClassRefRule[];
@@ -509,6 +510,7 @@ export function calculatePromotionRow({
   groupPrefix,
   groupLabel,
   appointmentDate,
+  retirementDate,
   actionDate = new Date(),
   paystub,
   rules = defaultPromotionClassRefRules,
@@ -552,12 +554,17 @@ export function calculatePromotionRow({
     };
   }
 
+  const retirementReferenceDate = retirementDate ? `${retirementDate.slice(0, 7)}-01` : null;
+  const progressionReferenceDate =
+    retirementReferenceDate && referenceDate >= retirementReferenceDate
+      ? retirementReferenceDate
+      : referenceDate;
   const rule = appointmentDate
     ? getPromotionRuleFromAppointmentDate({
         appointmentDate,
         currentClassRef: paystub.classRef,
         groupLabel,
-        referenceDate,
+        referenceDate: progressionReferenceDate,
       })
     : getPromotionRuleForDate(referenceDate, rules);
   if (!rule) {
