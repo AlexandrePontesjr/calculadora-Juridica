@@ -1,0 +1,2 @@
+"""Contracheque extractor package."""
+

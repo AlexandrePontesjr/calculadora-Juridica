@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LexAdmin Judicial - Detalhamento do Servidor</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#00236f",
+                        "surface-container-high": "#dce9ff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface": "#0b1c30",
+                        "error": "#ba1a1a",
+                        "tertiary": "#00311f",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-container": "#27c38a",
+                        "secondary-fixed": "#dbe1ff",
+                        "on-primary-container": "#90a8ff",
+                        "background": "#f8f9ff",
+                        "primary-container": "#1e3a8a",
+                        "primary-fixed-dim": "#b6c4ff",
+                        "on-secondary": "#ffffff",
+                        "inverse-on-surface": "#eaf1ff",
+                        "secondary-container": "#316bf3",
+                        "surface-tint": "#4059aa",
+                        "secondary-fixed-dim": "#b4c5ff",
+                        "on-background": "#0b1c30",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed": "#002113",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "inverse-primary": "#b6c4ff",
+                        "surface-dim": "#cbdbf5",
+                        "surface-variant": "#d3e4fe",
+                        "tertiary-container": "#004a31",
+                        "surface-container-highest": "#d3e4fe",
+                        "surface-bright": "#f8f9ff",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "outline": "#757682",
+                        "on-primary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed": "#00164e",
+                        "outline-variant": "#c5c5d3",
+                        "inverse-surface": "#213145",
+                        "on-error": "#ffffff",
+                        "on-secondary-fixed-variant": "#003ea8",
+                        "on-secondary-container": "#fefcff",
+                        "secondary": "#0051d5",
+                        "surface": "#f8f9ff",
+                        "primary-fixed": "#dce1ff",
+                        "on-surface-variant": "#444651",
+                        "on-primary-fixed-variant": "#264191",
+                        "on-secondary-fixed": "#00174b",
+                        "surface-container-low": "#eff4ff",
+                        "surface-container": "#e5eeff",
+                        "tertiary-fixed": "#6ffbbe"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "container-max-width": "1440px",
+                        "margin-desktop": "32px",
+                        "base": "8px",
+                        "margin-mobile": "16px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "data-mono": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-md": ["13px", {"lineHeight": "18px", "fontWeight": "600"}],
+                        "headline-lg": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "data-mono": ["14px", {"lineHeight": "20px", "fontWeight": "500"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-background text-on-surface">
+<!-- TopAppBar -->
+<header class="bg-surface docked full-width top-0 border-b border-outline-variant z-50 sticky">
+<div class="flex justify-between items-center w-full px-margin-desktop h-16 max-w-container-max-width mx-auto">
+<div class="flex items-center gap-6">
+<span class="text-headline-md font-headline-md font-bold text-primary">LexAdmin Judicial</span>
+<nav class="hidden md:flex gap-4">
+<button class="flex items-center gap-2 text-on-surface-variant font-body-md text-body-md hover:bg-surface-container-high transition-colors px-3 py-1 rounded">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+                        Voltar para importação
+                    </button>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="flex items-center gap-2 border border-primary text-primary px-4 py-2 font-label-md text-label-md hover:bg-surface-container-high transition-colors rounded">
+<span class="material-symbols-outlined" data-icon="picture_as_pdf">picture_as_pdf</span>
+                    Imprimir PDF
+                </button>
+<div class="flex gap-2">
+<span class="material-symbols-outlined text-on-surface-variant p-2 cursor-pointer hover:bg-surface-container-high rounded" data-icon="notifications">notifications</span>
+<span class="material-symbols-outlined text-on-surface-variant p-2 cursor-pointer hover:bg-surface-container-high rounded" data-icon="settings">settings</span>
+</div>
+<img alt="Avatar do Servidor" class="w-8 h-8 rounded-full bg-surface-container-high" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBsbnL3oUGnxI6jEZd1XJLVrww1as3_jdxGAHYw4SfrEXXG0SmN27-C-jy9QP3c3YV3ttbk3kuJ4uHBB6W93kP04BGGYgyXxnhwBRTx7HXZH8uvddvCEaUDwIiFOWijAWbagNgW6XHhLaqZvA-67_NjIrpOAhES_2atUfA9ogR-ueKcIptnZfmXMBOz-YnDm6u6LFDNTYUJkaX7MPtbvo3ZguAO_mPK0JXUPH6QIC270aoYsSC-36V3YbyEoqf5Vsyt5KQtpcPrWtiL"/>
+</div>
+</div>
+</header>
+<main class="max-w-container-max-width mx-auto px-margin-desktop py-8">
+<!-- Header Page Title -->
+<div class="mb-8">
+<h1 class="font-headline-lg text-headline-lg text-primary mb-1">PAULO WAGNER BRANDAO DE SOUZA</h1>
+<p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="verified_user">verified_user</span>
+                Detalhamento do Servidor Judiciário
+            </p>
+</div>
+<div class="grid grid-cols-12 gap-gutter">
+<!-- Left Column: Technical Context -->
+<div class="col-span-12 lg:col-span-4 space-y-gutter">
+<!-- Seção Técnica (Servidor Persistido) -->
+<section class="bg-surface-container-lowest border border-outline-variant p-6 rounded-lg shadow-sm">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary" data-icon="database">database</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Servidor Persistido</h2>
+</div>
+<div class="space-y-4">
+<div>
+<p class="font-label-md text-label-md text-outline uppercase tracking-wider mb-1">Server ID</p>
+<p class="font-data-mono text-data-mono bg-surface-container p-2 rounded truncate">97c4bdf680a1673501066ca9</p>
+</div>
+<div>
+<p class="font-label-md text-label-md text-outline uppercase tracking-wider mb-1">Persistido em</p>
+<p class="font-body-md text-body-md text-on-surface">05/05/2026, 20:18</p>
+</div>
+<div>
+<p class="font-label-md text-label-md text-outline uppercase tracking-wider mb-1">Arquivo de Origem</p>
+<div class="flex items-center gap-2 text-primary font-body-md text-body-md">
+<span class="material-symbols-outlined text-[18px]" data-icon="description">description</span>
+                                04 - CONTRACHEQUES (3).pdf
+                            </div>
+</div>
+<div class="pt-2 border-t border-outline-variant">
+<p class="font-label-md text-label-md text-outline uppercase tracking-wider mb-1">Extraction ID</p>
+<p class="font-data-mono text-data-mono text-[12px] break-all opacity-70">012d35b966e541e2a77db430f1f4317d</p>
+</div>
+</div>
+</section>
+<!-- Informações Complementares -->
+<section class="bg-surface-container-lowest border border-outline-variant p-6 rounded-lg shadow-sm">
+<h3 class="font-label-md text-label-md text-on-surface-variant mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="info">info</span>
+                        Dados do Servidor
+                    </h3>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<p class="font-label-md text-label-md text-outline">Cargo</p>
+<p class="font-body-md text-body-md">Médico Graduado</p>
+</div>
+<div>
+<p class="font-label-md text-label-md text-outline">Matrícula</p>
+<p class="font-body-md text-body-md">137.550-4</p>
+</div>
+<div>
+<p class="font-label-md text-label-md text-outline">Registro</p>
+<p class="font-body-md text-body-md">421014</p>
+</div>
+<div>
+<p class="font-label-md text-label-md text-outline">Emissão</p>
+<p class="font-body-md text-body-md">14/05/2026</p>
+</div>
+<div class="col-span-2">
+<p class="font-label-md text-label-md text-outline">Cargo Tabela</p>
+<p class="font-body-md text-body-md">Medico - I - Graduado</p>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column: Report & Data -->
+<div class="col-span-12 lg:col-span-8 space-y-gutter">
+<!-- Main Report Section -->
+<section class="bg-surface-container-lowest border border-outline-variant p-6 rounded-lg shadow-sm">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-1">Relatório de Cálculos</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Demonstrativo de diferenças remuneratórias</p>
+</div>
+<span class="bg-tertiary/10 text-tertiary px-3 py-1 rounded font-label-md text-label-md flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="check_circle" data-weight="fill">check_circle</span>
+                            Finalizado
+                        </span>
+</div>
+<!-- Resumo Financeiro Bento-style -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+<div class="bg-surface-container-low p-5 rounded-lg border border-outline-variant">
+<p class="font-label-md text-label-md text-on-surface-variant mb-2">Competências analisadas</p>
+<p class="font-headline-md text-headline-md text-primary">66</p>
+</div>
+<div class="bg-surface-container-low p-5 rounded-lg border border-outline-variant">
+<p class="font-label-md text-label-md text-on-surface-variant mb-2">Total das diferenças</p>
+<p class="font-headline-md text-headline-md text-primary">R$ 10.093,97</p>
+</div>
+<div class="bg-secondary-container p-5 rounded-lg border border-primary/20">
+<p class="font-label-md text-label-md text-on-secondary-container mb-2">Valor total a receber</p>
+<p class="font-headline-md text-headline-md text-on-secondary-container font-bold">R$ 10.093,97</p>
+</div>
+</div>
+<!-- Button Group and Filter Actions -->
+<div class="mb-6 space-y-3">
+<div class="flex items-center gap-0 bg-surface-container-low w-fit rounded overflow-hidden border border-outline-variant">
+<button class="px-6 py-2 bg-primary text-on-primary font-label-md text-label-md transition-colors">Cálculo</button>
+<button class="px-6 py-2 bg-transparent text-primary hover:bg-surface-container-high font-label-md text-label-md transition-colors border-l border-outline-variant">Planilha</button>
+</div>
+<p class="text-on-surface-variant text-body-md font-body-md italic">
+                            O cálculo considera apenas competências dos últimos 60 meses.
+                        </p>
+</div>
+<!-- Values Table Header -->
+<div>
+<div class="flex flex-col sm:flex-row sm:justify-between sm:items-end mb-4 gap-4">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Valores e referências</h3>
+<div class="flex items-center gap-3">
+<button class="text-primary font-label-md text-label-md hover:underline flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">open_in_full</span>
+                                    Expandir grupos
+                                </button>
+<span class="text-outline-variant">|</span>
+<button class="text-on-surface-variant font-label-md text-label-md hover:underline flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">close_fullscreen</span>
+                                    Recolher grupos
+                                </button>
+<span class="text-outline-variant">|</span>
+<button class="text-primary font-label-md text-label-md hover:underline flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">add_circle</span>
+                                    Aumentar detalhes
+                                </button>
+</div>
+</div>
+<!-- Accordion List -->
+<div class="space-y-3">
+<!-- Year Row 2026 -->
+<div class="border border-outline-variant rounded-lg overflow-hidden">
+<div class="flex items-center justify-between p-4 bg-surface-container-low hover:bg-surface-container-high transition-colors cursor-pointer border-b border-outline-variant">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary" data-icon="expand_more">expand_more</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">2026</span>
+<span class="text-on-surface-variant font-body-md text-body-md border-l border-outline-variant pl-4">2 competências | 2 calculadas</span>
+</div>
+<div class="flex gap-8">
+<div class="text-right">
+<p class="text-[10px] uppercase font-bold text-outline">Diferenças</p>
+<p class="font-data-mono text-data-mono">R$ 265,58</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] uppercase font-bold text-outline">Retroativo</p>
+<p class="font-data-mono text-data-mono text-primary font-bold">R$ 265,58</p>
+</div>
+</div>
+</div>
+<!-- Competence List (Simulating Expanded State) -->
+<div class="p-0 overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-high border-b border-outline-variant">
+<tr>
+<th class="px-4 py-2 font-label-md text-label-md text-on-surface-variant">Mês/Ano</th>
+<th class="px-4 py-2 font-label-md text-label-md text-on-surface-variant">Recebido</th>
+<th class="px-4 py-2 font-label-md text-label-md text-on-surface-variant">Devido</th>
+<th class="px-4 py-2 font-label-md text-label-md text-on-surface-variant">Diferença</th>
+<th class="px-4 py-2 font-label-md text-label-md text-on-surface-variant">Curso</th>
+<th class="px-4 py-2 font-label-md text-label-md text-on-surface-variant">Retroativo</th>
+<th class="px-4 py-2 font-label-md text-label-md text-on-surface-variant">Ref. Cálculo</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-4 py-3 font-data-mono text-data-mono">02/2026</td>
+<td class="px-4 py-3 font-data-mono text-data-mono">R$ 4.520,00</td>
+<td class="px-4 py-3 font-data-mono text-data-mono font-semibold">R$ 4.652,79</td>
+<td class="px-4 py-3 font-data-mono text-data-mono text-error">R$ 132,79</td>
+<td class="px-4 py-3 text-body-md">1.00</td>
+<td class="px-4 py-3 font-data-mono text-data-mono text-primary font-bold">R$ 132,79</td>
+<td class="px-4 py-3">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary" data-icon="article">article</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-4 py-3 font-data-mono text-data-mono">01/2026</td>
+<td class="px-4 py-3 font-data-mono text-data-mono">R$ 4.520,00</td>
+<td class="px-4 py-3 font-data-mono text-data-mono font-semibold">R$ 4.652,79</td>
+<td class="px-4 py-3 font-data-mono text-data-mono text-error">R$ 132,79</td>
+<td class="px-4 py-3 text-body-md">1.00</td>
+<td class="px-4 py-3 font-data-mono text-data-mono text-primary font-bold">R$ 132,79</td>
+<td class="px-4 py-3">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary" data-icon="article">article</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Year Row 2025 -->
+<div class="border border-outline-variant rounded-lg overflow-hidden">
+<div class="flex items-center justify-between p-4 bg-surface-container hover:bg-surface-container-high transition-colors cursor-pointer">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-outline" data-icon="expand_more">expand_more</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">2025</span>
+<span class="text-on-surface-variant font-body-md text-body-md border-l border-outline-variant pl-4">14 competências | 14 calculadas</span>
+</div>
+<div class="flex gap-8">
+<div class="text-right">
+<p class="text-[10px] uppercase font-bold text-outline">Diferenças</p>
+<p class="font-data-mono text-data-mono">R$ 1.688,84</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] uppercase font-bold text-outline">Retroativo</p>
+<p class="font-data-mono text-data-mono text-primary">R$ 1.688,84</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Year Row 2024 -->
+<div class="border border-outline-variant rounded-lg overflow-hidden">
+<div class="flex items-center justify-between p-4 bg-surface-container-low hover:bg-surface-container-high transition-colors cursor-pointer">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-outline" data-icon="expand_more">expand_more</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">2024</span>
+<span class="text-on-surface-variant font-body-md text-body-md border-l border-outline-variant pl-4">14 competências | 14 calculadas</span>
+</div>
+<div class="flex gap-8">
+<div class="text-right">
+<p class="text-[10px] uppercase font-bold text-outline">Diferenças</p>
+<p class="font-data-mono text-data-mono">R$ 2.969,50</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] uppercase font-bold text-outline">Retroativo</p>
+<p class="font-data-mono text-data-mono text-primary">R$ 2.969,50</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Year Row 2023 -->
+<div class="border border-outline-variant rounded-lg overflow-hidden">
+<div class="flex items-center justify-between p-4 bg-surface-container hover:bg-surface-container-high transition-colors cursor-pointer">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-outline" data-icon="expand_more">expand_more</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">2023</span>
+<span class="text-on-surface-variant font-body-md text-body-md border-l border-outline-variant pl-4">14 competências | 14 calculadas</span>
+</div>
+<div class="flex gap-8">
+<div class="text-right">
+<p class="text-[10px] uppercase font-bold text-outline">Diferenças</p>
+<p class="font-data-mono text-data-mono">R$ 3.025,30</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] uppercase font-bold text-outline">Retroativo</p>
+<p class="font-data-mono text-data-mono text-primary">R$ 3.025,30</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Year Row 2022 -->
+<div class="border border-outline-variant rounded-lg overflow-hidden">
+<div class="flex items-center justify-between p-4 bg-surface-container-low hover:bg-surface-container-high transition-colors cursor-pointer">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-outline" data-icon="expand_more">expand_more</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">2022</span>
+<span class="text-on-surface-variant font-body-md text-body-md border-l border-outline-variant pl-4">14 competências | 14 calculadas</span>
+</div>
+<div class="flex gap-8">
+<div class="text-right">
+<p class="text-[10px] uppercase font-bold text-outline">Diferenças</p>
+<p class="font-data-mono text-data-mono">R$ 1.471,26</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] uppercase font-bold text-outline">Retroativo</p>
+<p class="font-data-mono text-data-mono text-primary">R$ 1.471,26</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Year Row 2021 -->
+<div class="border border-outline-variant rounded-lg overflow-hidden">
+<div class="flex items-center justify-between p-4 bg-surface-container hover:bg-surface-container-high transition-colors cursor-pointer">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-outline" data-icon="expand_more">expand_more</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">2021</span>
+<span class="text-on-surface-variant font-body-md text-body-md border-l border-outline-variant pl-4">8 competências | 8 calculadas</span>
+</div>
+<div class="flex gap-8">
+<div class="text-right">
+<p class="text-[10px] uppercase font-bold text-outline">Diferenças</p>
+<p class="font-data-mono text-data-mono">R$ 673,49</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] uppercase font-bold text-outline">Retroativo</p>
+<p class="font-data-mono text-data-mono text-primary">R$ 673,49</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+</main>
+<!-- Visual Polish: Background Graphic -->
+<div class="fixed bottom-0 right-0 -z-10 opacity-5 pointer-events-none">
+<svg fill="none" height="400" viewbox="0 0 600 400" width="600" xmlns="http://www.w3.org/2000/svg">
+<path d="M0 400L600 0V400H0Z" fill="url(#paint0_linear)"></path>
+<defs>
+<lineargradient gradientunits="userSpaceOnUse" id="paint0_linear" x1="300" x2="300" y1="0" y2="400">
+<stop stop-color="#00236F"></stop>
+<stop offset="1" stop-color="#316BF3"></stop>
+</lineargradient>
+</defs>
+</svg>
+</div>
+</body></html>
